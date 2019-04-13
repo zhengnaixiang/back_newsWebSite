@@ -6,4 +6,5 @@ public class TestController {
         System.out.println("fdsfdsfds");
     }
     /*请在controller包后，添加子包，子包加上自己模块的名字*/
+    private  String name;
 }
