@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="utf-8">
 <head>
     <meta charset="UTF-8">
-    <title>新闻列表</title>
+    <title>评论列表管理</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -28,32 +28,27 @@
                 <div class="panel-body">
                     <form class="form-inline" role="form" style="float:left;">
                         <div class="form-group has-feedback">
-                            <!--<div class="input-group">-->
-                            <!--<div class="input-group-addon">-->
-                            <!--<select id="search_id">-->
-                            <!--<option>1</option>-->
-                            <!--<option>2</option>-->
-                            <!--</select>-->
-                            <!--</div>&nbsp;&nbsp;&nbsp;&nbsp;-->
-                            <!--<input class="form-control has-success" type="text" placeholder="搜索新闻" width="100">-->
-                            <!--</div>-->
-                            <div class="input-group">
-                                <div class="input-group-addon">标题</div>
-                                <input id="titleText" value="" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">作者</div>
-                                <input id="writerText" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
+                            <!--  <div class="input-group">
+                                  <div class="input-group-addon">标题</div>
+                                  <input id="titleText" value="" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                              </div>-->
                             <div class="input-group">
                                 <div class="input-group-addon">时间</div>
                                 <input id="dateText" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">评论人</div>
+                                <input id="writerText" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">文章</div>
+                                <input id="articleText" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>&nbsp;
                     </form>
-                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i>删除</button>
+                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i>新增</button>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
@@ -62,28 +57,27 @@
                             <tr >
                                 <th width="30">ID</th>
                                 <th width="30"><input id="BigFlag" type="checkbox"></th>
-                                <th>标题</th>
-                                <th>作者</th>
+                                <th>内容</th>
+                                <th>评论人</th>
+                                <th>对应文章</th>
                                 <th>时间</th>
-                                <th>所属类别</th>
-                                <th>点赞数</th>
-                                <th>评论数</th>
-                                <th width="200">操作</th>
+                                <th>状态</th>
+                                <th>举报理由</th>
+                                <th width="130">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <td>id</td>
-                                <td><input class="ids" type="checkbox" value="id"/> </td>
+                                <td><input class="ids" type="checkbox" value="id"/></td>
                                 <td>京雄城际铁路北京段具备铺轨条件</td>
-                                <td>新华网</td>
-                                <td>2019-04-13 00:44:00</td>
-                                <td>国内、时事、工业</td>
-                                <td>999</td>
-                                <td>888</td>
+                                <td>admin</td>
+                                <th>京雄城际铁路北京段具备铺轨条件</th>
+                                <th>2019-04-13 00:44:00</th>
+                                <th>显示</th>
+                                <td>反人类</td>
                                 <td>
                                     <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-pencil"></i>编辑</button>
-                                    <button type="button" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-check"></i>查看</button>
                                     <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i>删除</button>
                                 </td>
                             </tr>
