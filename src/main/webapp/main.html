@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <div id="top"></div>
+    <div class="container-fluid">
+        <div class="row">
+           <div id="left"></div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
+                <h1 class="page-header">用户中心</h1>
+                <div class="row placeholders">
+                    <div class="col-xs-6 col-sm-3 placeholder">
+                        <img data-src="holder.js/200x200/auto/sky" src="img/time.png" class="img-responsive" alt="Generic placeholder thumbnail">
+                        <h4>当前时间</h4>
+                        <span class="text-muted">2019-4-13 00:00:00</span>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 placeholder">
+                        <img data-src="holder.js//auto/vine" src="img/number.png" class="img-responsive" alt="Generic placeholder thumbnail">
+                        <h4>新闻总数</h4>
+                        <span class="text-muted">40篇</span>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 placeholder">
+                        <img data-src="holder.js/200x200/auto/sky" src="img/comment%20.png" class="img-responsive" alt="Generic placeholder thumbnail">
+                        <h4>评论总数</h4>
+                        <span class="text-muted">100条</span>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 placeholder">
+                        <img data-src="holder.js/200x200/auto/vine" src="img/catogory.png" class="img-responsive" alt="Generic placeholder thumbnail">
+                        <h4>类别数目</h4>
+                        <span class="text-muted">5类</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/docs.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#top").load("head.html");
+        $("#left").load("left.html");
+    });
+</script>
+</html>
