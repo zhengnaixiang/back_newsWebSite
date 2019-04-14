@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑评论</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/doc.min.css">
+</head>
+<body>
+
+<div id="top"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div id="left"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
+            <h1 class="page-header">添加类别</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">评论信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="dataText">类别名称</label>
+                            <input type="text" class="form-control" id="dataText" value="admin">
+                        </div>
+                        <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>添加</button>
+                        <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i>重置</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/docs.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#top").load("head.html");
+        $("#left").load("left.html");
+    });
+</script>
+</html>
