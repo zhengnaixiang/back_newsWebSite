@@ -27,7 +27,7 @@
 
     <!-- 4、配置mybatis接口扫描器 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.qf.MenuInfo.mapper"></property>
+        <property name="basePackage" value="com.qf.*.mapper"></property>
         <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
     </bean>
 
