@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommentController {
-
     @Autowired
-    private CommentService commentService;
+    CommentService commentService;
 
     @RequestMapping(value = "addCommentBy",method = RequestMethod.POST)
     public String addCommentBy(@RequestBody Comment comment){
