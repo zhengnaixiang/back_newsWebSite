@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qf.Comment.mapper.CommentMapper">
-    <insert id="addCommentBy" parameterType="com.qf.Comment.pojo.Comment">
-        insert into comment(parentid,np_id,comment_date,comment_content,user_id)
-        values(#{parent_id},#{np_id},#{comment_date},#{comment_content},#{user_id})
+<mapper namespace="com.qf.comment.mapper.CommentMapper">
+    <insert id="addCommentBy" parameterType="com.qf.comment.pojo.Comment">
+      insert into comment(parent_id,np_id,comment_content,user_id)
+      values(#{parent_id},#{np_id},#{comment_content},#{user_id})
     </insert>
 
 </mapper>

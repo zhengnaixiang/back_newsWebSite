@@ -1,6 +1,6 @@
-package com.qf.Comment.mapper;
+package com.qf.comment.mapper;
 
-import com.qf.Comment.pojo.Comment;
+import com.qf.comment.pojo.Comment;
 
 public interface CommentMapper {
     int addCommentBy(Comment comment);

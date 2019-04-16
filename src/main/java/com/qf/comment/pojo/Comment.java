@@ -1,4 +1,4 @@
-package com.qf.Comment.pojo;
+package com.qf.comment.pojo;
 
 import java.sql.Date;
 
