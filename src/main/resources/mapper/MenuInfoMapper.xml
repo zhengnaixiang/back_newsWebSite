@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.MenuInfo.mapper.MenuInfoMapper">
+    <resultMap id="MenuInfoMap" type="com.qf.MenuInfo.dto.MenuInfoDto">
+        <id column="menu_id" property="id"></id>
+        <result column="menu_name" property="name"></result>
+        <result column="menu_url" property="url"></result>
+        <result column="parent_id" property="pid"></result>
+        <result column="checked" property="checked"></result>
+        <collection property="children" ofType="com.qf.MenuInfo.dto.MenuInfoDto">
+            <id column="cid" property="id"></id>
+            <result column="cname" property="name"></result>
+            <result column="cpath" property="url"></result>
+            <result column="cpid" property="pid"></result>
+            <result column="checked" property="checked"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getAllMenuByPower" parameterType="int" resultMap="MenuInfoMap">
+        select tb1.*,IF(power_id IS NULL,0,1) checked from (select m1.*,m2.menu_id cid,m2.menu_name cname,
+        m2.menu_url cpath,m2.parent_id cpid from menuinfo m1,menuinfo m2 where m1.menu_id = m2.parent_id) tb1
+        left join  power p on tb1.menu_id = p.menu_id and p.user_power=#{power}
+    </select>
+
+    <insert id="batchAdd" parameterType="com.qf.MenuInfo.vo.MenuInfoVo">
+        insert into  power(power_id,user_power,menu_id) value
+        <foreach collection="menuSelected" item="menuid" open="(" close=")" separator="),(">
+            default ,#{power},#{menuid}
+        </foreach>
+    </insert>
+
+    <delete id="batchDel" parameterType="com.qf.MenuInfo.vo.MenuInfoVo">
+        delete from power
+        <where>
+            user_power = #{power} and menu_id in
+            <foreach collection="menuUnSelected" item="menuid" open="(" close=")" separator=",">
+                #{menuid}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>
