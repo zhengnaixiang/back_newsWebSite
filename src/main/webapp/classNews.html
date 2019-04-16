@@ -97,12 +97,9 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="script/docs.min.js"></script>
 <script type="text/javascript">
-    $(function () {
-        init();
-    });
-
+    init();
     function init(){
-        var classesName = $("#nameText").val().trim();
+        var classesNametxt = $("#nameText").val().trim();
         $("#classesTable  tr:not(:first)").empty("");
         console.log("初始化页面");
             $.ajax({
@@ -110,15 +107,21 @@
                 url: 'getClassesCountList',
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
+                    console.log("成功");
                     $(response).each(function (index, item) {
                         $("#classesTbody").append("<tr>" +
                             "<td>" + item.class_id + "</td>" +
                             "<td><input type=\"checkbox\"></td>" +
                             "<td>" + item.class_name + "</td>" +
                             "<td>" + item.num + "</td>" +
-                            "<td>" + "<button type=\"button\" class=\"btn btn-success btn-xs\" onclick=\"window.location.href='editClassNews.html'\" ><i class=\" glyphicon glyphicon-pencil\"></i>编辑</button>\n" +
-                            "<button type=\"button\" class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i>删除</button>" +
-                            "</td>")
+                            "<td>" +
+                            "<button type=\"button\" onclick='ToEdit("+item.class_id+")'  class=\"btn btn-success btn-xs\" ><i class=\" glyphicon glyphicon-pencil\"></i>编辑</button>" +
+                            "<button type=\"button\" onclick='ToDelete("+item.class_id+")'  class=\"btn btn-danger btn-xs\" ><i class=\" glyphicon glyphicon-remove\"></i>删除</button>" +
+                            "</td>"+
+                            "</tr>"
+                        )
+                        // <button type="button" class="btn btn-success btn-xs" onclick="ToEdit("+item.class_id+")" ><i class=" glyphicon glyphicon-pencil"></i>编辑</button>
+                        // <button type="button" class="btn btn-danger btn-xs" onclick="ToDelete("+item.class_name+")"><i class=" glyphicon glyphicon-remove"></i>删除</button>
                     })
                 },
                 error: function (response) {
@@ -127,9 +130,38 @@
                 },
                 dataType: "json"
             });
-
-
     }
+
+    function ToEdit(class_id) {
+        var edit = "editClassNews.html?class_id=" + class_id;
+        window.location.href = edit;
+    }
+
+    function ToDelete(class_id) {
+        $.ajax({
+            type:'POST',
+            url:'deleteClasses',
+            contentType:"application/json, charset=utf-8",
+            data:JSON.stringify({
+                "class_id":class_id
+            }),
+            success:function (response) {
+                if (response == true) {
+                    alert("删除成功！");
+                    window.location.href = "classNews.html";
+                } else {
+                    alert("删除失败！")
+                }
+            },
+            error: function (response) {
+                console.log(response);
+                alert("服务器错误!");
+            },
+            dataType:'json'
+        })
+    }
+
+
     $(function () {
         $("#top").load("head.html");
         $("#left").load("left.html");
