@@ -1,16 +1,14 @@
-package com.qf.Classes.dto;
+package com.qf.MyClass.pojo;
 
-
-public class ClassesDto {
-    Integer class_id;
+public class MyClass {
+    int class_id;
     String class_name;
-    Integer num;
 
-    public Integer getClass_id() {
+    public int getClass_id() {
         return class_id;
     }
 
-    public void setClass_id(Integer class_id) {
+    public void setClass_id(int class_id) {
         this.class_id = class_id;
     }
 
@@ -22,20 +20,19 @@ public class ClassesDto {
         this.class_name = class_name;
     }
 
-    public Integer getNum() {
-        return num;
+    public MyClass(int class_id, String class_name) {
+        this.class_id = class_id;
+        this.class_name = class_name;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public MyClass() {
     }
 
     @Override
     public String toString() {
-        return "ClassesDto{" +
+        return "MyClass{" +
                 "class_id=" + class_id +
                 ", class_name='" + class_name + '\'' +
-                ", num=" + num +
                 '}';
     }
 }
