@@ -32,47 +32,54 @@
                                   <div class="input-group-addon">标题</div>
                                   <input id="titleText" value="" class="form-control has-success" type="text" placeholder="请输入查询条件">
                               </div>-->
-                            <div class="input-group">
-                                <div class="input-group-addon">ID</div>
-                                <input id="numberText" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
+                            <!--<div class="input-group">-->
+                                <!--<div class="input-group-addon">ID</div>-->
+                                <!--<input id="numberText" class="form-control has-success" type="text" placeholder="请输入查询条件">-->
+                            <!--</div>-->
                             <div class="input-group">
                                 <div class="input-group-addon">名称</div>
                                 <input id="nameText" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">账号</div>
+                                <input id="userNameText" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">手机号</div>
+                                <input id="telText" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button type="button" onclick="initPage(1)" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
-                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+                    <button type="button" onclick="batchDel()" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='addUserInfo.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
-                        <table class="table  table-bordered">
+                        <table class="table  table-bordered" id="tab">
                             <thead>
                             <tr >
                                 <th width="30">ID</th>
                                 <th width="30"><input id="BigFlag" type="checkbox"></th>
+                                <th>头像</th>
+                                <th>账号</th>
                                 <th>名称</th>
+                                <th>手机号</th>
+                                <th>权限等级</th>
                                 <th width="130">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td>id</td>
-                                <td><input class="ids" type="checkbox" value="id"/></td>
-                                <td>admin</td>
-                                <td>
-                                    <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-pencil"></i>编辑</button>
-                                    <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i>删除</button>
-                                </td>
+
                             </tr>
                             </tbody>
                         </table>
+                        <table>
                         <tfoot >
                         <tr >
                             <td>
-                                <ul class="pagination" align="center">
+                                <ul class="pagination" align="center" id="pagination">
                                     <li class="disabled"><a href="#">上一页</a></li>
                                     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
                                     <li><a href="#">2</a></li>
@@ -84,10 +91,17 @@
                             </td>
                         </tr>
                         </tfoot>
+                        </table>
                     </div>
                 </div>
+
             </div>
         </div>
+    </div>
+</div>
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
     </div>
 </div>
 </body>
@@ -126,5 +140,209 @@
             }
         });
     });
+
+    function modify(user_id){
+        window.location.href="editUserInfo.html?user_id="+user_id;
+
+    }
+
+    function dele(user_id){
+        $.ajax({
+            type:'POST',
+            url:"deleteUserInfoById",
+            contentType:"application/json;charset=utf-8",
+            data:JSON.stringify({
+                "user_id":user_id
+            }),
+            success:function (response) {
+                if(response==true){
+                    window.location.href="user.html"
+                }else{
+                    alert("操作失败");
+                }
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        })
+    }
+
+    function initPage(currentPage) {
+        $("#tab tr:not(:first)").empty();
+        // var numbertxt =$("#numberText").val().trim();
+        var usernametxt =$("#userNameText").val().trim();
+        var nametxt = $("#nameText").val().trim();
+        var teltxt = $("#telText").val().trim();
+        $.ajax({
+            type: "POST",
+            url: "userInfoList",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                // "user_id":numbertxt,
+                "user_alias":nametxt,
+                "username":usernametxt,
+                "user_tel":teltxt,
+                "splitePageBean":{
+                    "currentPage":currentPage,
+                    "pageSize":3
+                }
+            }),
+            success: function (responseText) {
+                var splitePageBean = responseText.splitePageBean;
+                var str="";
+                $("#pagination").empty();
+                if(splitePageBean.currentPage==1){
+                    str+="<li class=\"disabled\"><a href=\"#\">上一页</a></li>";
+                }else
+                    str+="<li><a href=\"#\" onclick='initPage("+(splitePageBean.currentPage-1)+")'>上一页</a></li>";
+                for(var i=1;i<=splitePageBean.pageCount;i++){
+                    if(splitePageBean.currentPage==i){
+                        str+="<li class=\"active\"><a href=\"#\" onclick='initPage("+i+")'>"+i+"</a></li>";
+                    }else{
+                        str+="<li><a href=\"#\" onclick='initPage("+i+")'>"+i+"</a></li>";
+                    }
+                }
+                if(splitePageBean.currentPage==splitePageBean.pageCount){
+                    str += "<li class=\"disabled\"><a href=\"#\">下一页</a></li>";
+                }else{
+                    str += "<li><a href=\"#\" onclick='initPage("+(splitePageBean.currentPage+1)+")'>下一页</a></li>";
+                }
+                $("#pagination").html(str);
+                $(responseText.list).each(function (index, item) {
+                    $(" <tr>\n" +
+                        "                  <td>" + item.user_id + "</td>\n" +
+                        "\t\t\t\t  <td><input type=\"checkbox\" class='ids' onclick='idsClick(this)' value='" + item.user_id + "'></td>\n" +
+                        "                  <td><img class='pimg' style='height: 100px;width: 100px' src='"+ item.user_imageUrl + "'/></td>\n" +
+                        "                  <td>" + item.username + "</td>\n" +
+                        "                  <td>" + item.user_alias + "</td>\n" +
+                        "                  <td>" + item.user_tel + "</td>\n" +
+                        "                  <td>" + item.user_power + "</td>\n" +
+                        "                  <td>\n" +
+                        "\t\t\t\t      <button type=\"button\" class=\"btn btn-success btn-xs\" onclick='role("+item.user_id+")'><i class=\" glyphicon glyphicon-check\"></i></button>\n" +
+                        "\t\t\t\t      <button type=\"button\" onclick='modify(" + item.user_id + ")' class=\"btn btn-primary btn-xs\"><i class=\" glyphicon glyphicon-pencil\"></i></button>\n" +
+                        "\t\t\t\t\t  <button type=\"button\" onclick='dele(" + item.user_id + ")'class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i></button>\n" +
+                        "\t\t\t\t  </td>\n" +
+                        "                </tr>").insertAfter($("tr:eq(" + (1 + index) + ")"))
+                });
+                show();
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
+    }
+
+    initPage(1);
+
+    // function ser() {
+    //     $("#tab tr:not(:first)").empty();
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "getUserInfoBy",
+    //         contentType: "application/json; charset=utf-8",
+    //         data: JSON.stringify({
+    //             "username":$("#userNameText").val(),
+    //             "name":$("#nameText").val(),
+    //             "email":$("#emailText").val()
+    //         }),
+    //         success: function(responseText){
+    //             $(responseText).each(function (index,item) {
+    //                 $(" <tr>\n" +
+    //                     "                  <td>"+item.user_id+"</td>\n" +
+    //                     "\t\t\t\t  <td><input type=\"checkbox\" class='ids' onclick='idsClick(this)' value='"+item.user_id+"'></td>\n" +
+    //                     "                  <td>"+item.username+"</td>\n" +
+    //                     "                  <td>"+item.name+"</td>\n" +
+    //                     "                  <td>"+item.email+"</td>\n" +
+    //                     "                  <td>\n" +
+    //                     "\t\t\t\t      <button type=\"button\" class=\"btn btn-success btn-xs\"><i class=\" glyphicon glyphicon-check\"></i></button>\n" +
+    //                     "\t\t\t\t      <button type=\"button\" onclick='modify("+item.user_id+")' class=\"btn btn-primary btn-xs\"><i class=\" glyphicon glyphicon-pencil\"></i></button>\n" +
+    //                     "\t\t\t\t\t  <button type=\"button\" onclick='dele("+item.user_id+")'class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i></button>\n" +
+    //                     "\t\t\t\t  </td>\n" +
+    //                     "                </tr>").insertAfter($("tr:eq("+(1+index)+")"))
+    //             })
+    //         },
+    //         error: function (message) {
+    //             console.log(message);
+    //         },
+    //         dataType: 'json'
+    //     });
+    // }
+
+    function batchDel(){
+        var ids =new Array;
+        $(".ids:checked").each(function (index) {
+            ids.push($(this).val())
+        });
+        $.ajax({
+            type:'POST',
+            url:"batchDeleteUserInfo",
+            contentType: "application/json; charset=utf-8",
+            data:JSON.stringify(
+                ids
+            ),
+            success:function (response) {
+                if(response==true){
+                    window.location.href="user.html"
+                }else{
+                    alert("操作失败");
+                }
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        })
+    }
+
+    function show(){
+        setTimeout(function () {
+            $(".pimg").click(function(){
+                var _this = $(this);//将当前的pimg元素作为_this传入函数
+                imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+            });
+        },100)
+
+    }
+
+    function imgShow(outerdiv, innerdiv, bigimg, _this){
+        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
+        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
+
+        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+        $("<img/>").attr("src", src).load(function(){
+            var windowW = $(window).width();//获取当前窗口宽度
+            var windowH = $(window).height();//获取当前窗口高度
+            var realWidth = this.width;//获取图片真实宽度
+            var realHeight = this.height;//获取图片真实高度
+            var imgWidth, imgHeight;
+            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+            if(realHeight>windowH*scale) {//判断图片高度
+                imgHeight = windowH*scale;//如大于窗口高度，图片高度进行缩放
+                imgWidth = imgHeight/realHeight*realWidth;//等比例缩放宽度
+                if(imgWidth>windowW*scale) {//如宽度扔大于窗口宽度
+                    imgWidth = windowW*scale;//再对宽度进行缩放
+                }
+            } else if(realWidth>windowW*scale) {//如图片高度合适，判断图片宽度
+                imgWidth = windowW*scale;//如大于窗口宽度，图片宽度进行缩放
+                imgHeight = imgWidth/realWidth*realHeight;//等比例缩放高度
+            } else {//如果图片真实高度和宽度都符合要求，高宽不变
+                imgWidth = realWidth;
+                imgHeight = realHeight;
+            }
+            $(bigimg).css("width",imgWidth);//以最终的宽度对图片缩放
+
+            var w = (windowW-imgWidth)/2;//计算图片与窗口左边距
+            var h = (windowH-imgHeight)/2;//计算图片与窗口上边距
+            $(innerdiv).css({"top":h, "left":w});//设置#innerdiv的top和left属性
+            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
+        });
+
+        $(outerdiv).click(function(){//再次点击淡出消失弹出层
+            $(this).fadeOut("fast");
+        });
+    }
 </script>
 </html>

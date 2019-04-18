@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .file-box{
+
+            display: inline-block;
+
+            position: relative;
+
+            padding: 3px 5px;
+
+            overflow: hidden;
+
+            color:#fff;
+
+            background-color: #ccc;
+
+        }
+
+        .file-btn{
+
+            position: absolute;
+
+            width: 100%;
+
+            height: 100%;
+
+            top: 0;
+
+            left: 0;
+
+            outline: none;
+
+            background-color: transparent;
+
+            filter:alpha(opacity=0);
+
+            -moz-opacity:0;
+
+            -khtml-opacity: 0;
+
+            opacity: 0;
+
+        }
+
+        .tree li {
+            list-style-type: none;
+            cursor:pointer;
+        }
+        table tbody tr:nth-child(odd){background:#F4F4F4;}
+        table tbody td:nth-child(even){color:#C00;}
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div id="left"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-body">
+                    <form role="form" action="/bg/addUserInfoMethod" method="post" enctype="multipart/form-data" id="myform">
+                        <div class="form-group">
+                            <label for="file">头像</label><br/>
+                                    <p class="enterImg"><img class="pimg" id="previewImage" src=""  style="display:none;height: 100px;width: 100px"/></p>
+                            <div class="file-box" style="margin-top: 10px">
+                                <input type="file" class="file-btn" id="file" name="file" placeholder="请上传用户头像">
+                                上传头像
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">账号</label>
+                            <input type="text" class="form-control" onblur="checkU(this)" onfocus="setSubm(this)" id="username" name="username"  placeholder="请输入用户账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">密码</label>
+                            <input type="text" class="form-control" id="password" name="password"  placeholder="请输入用户密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="user_tel">手机号</label>
+                            <input type="text" class="form-control" onblur="checkU(this)"  onfocus="setSubm(this)" id="user_tel" name="user_tel"  placeholder="请输入用户账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="user_alias">名称</label>
+                            <input type="text" class="form-control" onblur="checkU(this)"  onfocus="setSubm(this)" id="user_alias" name="user_alias" placeholder="请输入用户账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="user_power">权限等级</label>
+                            <select class="form-control" id="user_power" name="user_power" ></select>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="subm()"><i class="glyphicon glyphicon-edit"></i> 修改</button>
+                        <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+</div>
+</body>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="jquery/jquery.validate-1.13.1.js"></script>
+<script src="script/docs.min.js"></script>
+<script type="text/javascript">
+    show();
+    $(function () {
+        $("#top").load("head.html");
+        $("#left").load("left.html");
+        for(var i =1 ;i < 18; i++){
+            var option = document.createElement("option");
+            option.value=i;
+            option.innerHTML=i;
+            document.getElementById("user_power").appendChild(option);
+        }
+    });
+
+    $("#myform").validate({
+        rules:{
+            username:{
+                required: true,
+                email:true
+            },
+            user_tel:{
+                required: true,
+                digits:true
+            },
+            user_alias:{
+                required: true,
+                maxlength:8
+            },
+            password:{
+                required: true,
+                minlength:8
+            },
+            user_imageUrl:{
+                required:true
+            }
+        },
+        messages:{
+            username:{
+                required:"请输入用户名",
+                email: "请输入有效的电子邮件地址"
+            },
+            user_alias:{
+                required:"昵称不能为空",
+                maxlength:"昵称不能超过8个字"
+            },
+            password:{
+                required:"密码不能为空",
+                minlength:"密码不能少于8个字"
+            },
+            user_tel:{
+                required:"请输入手机号",
+                digits:"请输入正确的手机号"
+            },
+            user_imageUrl:{
+                required:"请上传头像"
+            }
+        }
+    });
+    function checkU(obj){
+        var parentElement = obj.parentElement;
+        var fName = obj.name.toString();
+        obj.value = obj.value.trim();
+        var value = obj.value.toString();
+        var object = new Object();
+        switch (fName) {
+            case "username":$.ajax({
+                type: 'POST',
+                url: 'checkUserInfo?',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "username":value
+                }),
+                success: function (response) {
+                    console.log(response);
+                    if(parentElement.children[2] != null)
+                        if("error" == parentElement.children[2].className && parentElement.children[2].textContent != "")
+                            return;
+                        else parentElement.children[2].remove();
+                    if(response) {
+                        if(value==""){
+                            $("<span>" + parentElement.children[0].innerHTML + "不能为空</span>").insertAfter(obj);
+                        }else
+                            $("<span>" + parentElement.children[0].innerHTML + "已被注册</span>").insertAfter(obj);
+                    }
+                },
+                error: function (response) {
+                    console.error(response);
+                },
+                dataType: 'json'
+            }); break;
+            case "user_alias":$.ajax({
+                type: 'POST',
+                url: 'checkUserInfo?',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_alias":value
+                }),
+                success: function (response) {
+                    console.log(response);
+                    if(parentElement.children[2] != null)
+                        if("error" == parentElement.children[2].className && parentElement.children[2].textContent != "")
+                            return;
+                        else parentElement.children[2].remove();
+                    if(response) {
+                        if(value==""){
+                            $("<span>" + parentElement.children[0].innerHTML + "不能为空</span>").insertAfter(obj);
+                        }else
+                            $("<span>" + parentElement.children[0].innerHTML + "已被注册</span>").insertAfter(obj);
+                    }
+                },
+                error: function (response) {
+                    console.error(response);
+                },
+                dataType: 'json'
+            }); break;
+            case "user_tel":$.ajax({
+                type: 'POST',
+                url: 'checkUserInfo?',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_tel":value
+                }),
+                success: function (response) {
+                    console.log(response);
+                    if(parentElement.children[2] != null)
+                        if("error" == parentElement.children[2].className && parentElement.children[2].textContent != "")
+                            return;
+                        else parentElement.children[2].remove();
+                    if(response) {
+                        if(value==""){
+                            $("<span>" + parentElement.children[0].innerHTML + "不能为空</span>").insertAfter(obj);
+                        }else
+                            $("<span>" + parentElement.children[0].innerHTML + "已被注册</span>").insertAfter(obj);
+                    }
+                },
+                error: function (response) {
+                    console.error(response);
+                },
+                dataType: 'json'
+            }); break;
+        }
+        $("#sub").bind("click",function () {
+            subm();
+        });
+    }
+
+    function show(){
+        setTimeout(function () {
+            $(".pimg").click(function(){
+                var _this = $(this);//将当前的pimg元素作为_this传入函数
+                imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+            });
+        },100)
+
+    }
+    function imgShow(outerdiv, innerdiv, bigimg, _this){
+        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
+        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
+
+        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+        $("<img/>").attr("src", src).load(function(){
+            var windowW = $(window).width();//获取当前窗口宽度
+            var windowH = $(window).height();//获取当前窗口高度
+            var realWidth = this.width;//获取图片真实宽度
+            var realHeight = this.height;//获取图片真实高度
+            var imgWidth, imgHeight;
+            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+            if(realHeight>windowH*scale) {//判断图片高度
+                imgHeight = windowH*scale;//如大于窗口高度，图片高度进行缩放
+                imgWidth = imgHeight/realHeight*realWidth;//等比例缩放宽度
+                if(imgWidth>windowW*scale) {//如宽度扔大于窗口宽度
+                    imgWidth = windowW*scale;//再对宽度进行缩放
+                }
+            } else if(realWidth>windowW*scale) {//如图片高度合适，判断图片宽度
+                imgWidth = windowW*scale;//如大于窗口宽度，图片宽度进行缩放
+                imgHeight = imgWidth/realWidth*realHeight;//等比例缩放高度
+            } else {//如果图片真实高度和宽度都符合要求，高宽不变
+                imgWidth = realWidth;
+                imgHeight = realHeight;
+            }
+            $(bigimg).css("width",imgWidth);//以最终的宽度对图片缩放
+
+            var w = (windowW-imgWidth)/2;//计算图片与窗口左边距
+            var h = (windowH-imgHeight)/2;//计算图片与窗口上边距
+            $(innerdiv).css({"top":h, "left":w});//设置#innerdiv的top和left属性
+            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
+        });
+
+        $(outerdiv).click(function(){//再次点击淡出消失弹出层
+            $(this).fadeOut("fast");
+        });
+    }
+    // $.extend($.validator.messages, {
+    //     required: "这是必填字段",
+    //     remote: "请修正此字段",
+    //     email: "请输入有效的电子邮件地址",
+    //     url: "请输入有效的网址",
+    //     date: "请输入有效的日期",
+    //     dateISO: "请输入有效的日期 (YYYY-MM-DD)",
+    //     number: "请输入有效的数字",
+    //     digits: "只能输入数字",
+    //     creditcard: "请输入有效的信用卡号码",
+    //     equalTo: "你的输入不相同",
+    //     extension: "请输入有效的后缀",
+    //     maxlength: $.validator.format("最多可以输入 {0} 个字符"),
+    //     minlength: $.validator.format("最少要输入 {0} 个字符"),
+    //     rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的字符串"),
+    //     range: $.validator.format("请输入范围在 {0} 到 {1} 之间的数值"),
+    //     max: $.validator.format("请输入不大于 {0} 的数值"),
+    //     min: $.validator.format("请输入不小于 {0} 的数值")
+    // });
+    var array = ["gif","jpg","jpeg","bmp","png","psd"];
+    $("#file").change(function () {
+        var fileObj = this.files[0];
+        var s = fileObj.name;
+        for(var i=0 ; i<array.length ; i++){
+            if(s.toLowerCase().endsWith(array[i])){
+                var fileUrl = window.URL.createObjectURL(fileObj);
+                $("#previewImage").attr({"src":fileUrl},{"display":"contents"});
+                document.getElementById('previewImage').style="width:100px;height:100px";
+                return;
+            }
+        }
+        this.files=null;
+        this.value=null;
+        alert("请上传正确的图片格式");
+
+    });
+    function setSubm(obj){
+        var parentElement1 = obj.parentElement;
+        if(parentElement1.children[2] != null)
+            parentElement1.children[2].remove();
+    }
+
+    function subm() {
+        $("#sub").blur();
+        $("#sub").unbind();
+        var flag = true;
+        if ($("label[class='error']").length > 0) {
+            if ($("label[class='error']").text() != null && $("label[class='error']").text() != "") {
+                for(var index = 0;index<$("label[class='error']").length;index++)
+                    if (flag) {
+                        debugger;
+                        if ($("label[class='error']:eq(" + index + ")").text() != null && $("label[class='error']:eq(" + index + ")").text() != "") {
+                            alert($("label[class='error']:eq(" + index + ")").text());
+                            flag = false;
+                            break;
+                        }
+                    }
+            }
+        }
+        if ($("input+span").length > 0) {
+            if(flag) {
+                alert($("input+span:first").html());
+                flag = false;
+            }
+        }
+        $("input").each(function () {
+            if(flag) {
+                if ($(this).val() == null || $(this).val() == ""){
+                    alert($(this).attr("placeholder"));
+                    flag=false;
+                }
+            }
+        });
+        if(flag)
+            $("#myform").submit();
+    }
+</script>
+</html>
