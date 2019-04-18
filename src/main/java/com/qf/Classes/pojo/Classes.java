@@ -1,14 +1,23 @@
-package com.qf.MyClass.pojo;
+package com.qf.Classes.pojo;
 
-public class MyClass {
-    int class_id;
+public class Classes {
+    Integer class_id;
     String class_name;
+    Integer status;
 
-    public int getClass_id() {
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getClass_id() {
         return class_id;
     }
 
-    public void setClass_id(int class_id) {
+    public void setClass_id(Integer class_id) {
         this.class_id = class_id;
     }
 
@@ -20,19 +29,13 @@ public class MyClass {
         this.class_name = class_name;
     }
 
-    public MyClass(int class_id, String class_name) {
-        this.class_id = class_id;
-        this.class_name = class_name;
-    }
-
-    public MyClass() {
-    }
 
     @Override
     public String toString() {
-        return "MyClass{" +
+        return "Classes{" +
                 "class_id=" + class_id +
                 ", class_name='" + class_name + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

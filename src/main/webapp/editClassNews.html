@@ -19,7 +19,7 @@
     <div class="row">
         <div id="left"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
-            <h1 class="page-header">添加类别</h1>
+            <h1 class="page-header">修改类别</h1>
             <div class="panel panel-default">
                 <div class="panel-heading">类别信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
@@ -29,7 +29,7 @@
                             <input type="text" class="form-control" id="dataText" value="admin">
                         </div>
                         <button type="button" onclick="updateClassesBtn()" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>修改</button>
-                        <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i>重置</button>
+                        <button type="button" class="btn btn-danger" onclick="retreat()"><i class="glyphicon glyphicon-refresh"></i>返回</button>
                     </form>
                 </div>
             </div>
@@ -46,27 +46,29 @@
         $("#left").load("left.html");
     });
 
+    //获取classNews.html传过来的class_id
     var class_id = window.location.search;
     class_id = class_id.split("=")[1];
 
+    //根据class_id获取对象，并在修改页面回显信息
     $.ajax({
-        type:'POST',
+        type: 'POST',
         url: 'initClasses',
-        contentType:"application/json; charset=utf-8",
-        data:JSON.stringify({
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
             "class_id": class_id
         }),
-        success:function (response) {
+        success: function (response) {
             $("#dataText").val(response.class_name)
         },
         error: function (response) {
             console.log(response)
         },
-        dataType:'json'
-    })
+        dataType: 'json'
+    });
 
+    //修改分类
     function updateClassesBtn() {
-        // var classnametxt = $("#dataText").val().trim();
         $.ajax({
             type: 'POST',
             url:'updateClasses',
@@ -78,9 +80,10 @@
             success:function (response) {
                 if (response == true) {
                     alert("修改成功！");
-                    window.location.href = "classNews.html"
-                } else {
-                    alert("修改失败！")
+                    window.location.href = "classNews.html";
+                }else {
+                    alert("分类名字已存在！");
+                    window.location.href = "editClassNews.html?class_id="+class_id;
                 }
             },
             error:function (response) {
@@ -89,6 +92,10 @@
             },
             dataType:'json'
         })
+    }
+
+    function retreat() {
+        window.location.href = "classNews.html";
     }
 </script>
 </html>

@@ -51,6 +51,11 @@ public class UserInfoController {
         Boolean b = userInfoService.deleteUserInfoById(userInfo.getUser_id());
         return b.toString();
     }
+    @RequestMapping(value = "deleteUserInfoById2",method = RequestMethod.POST)
+    public String deleteUserInfoById2(@RequestParam int id){
+        Boolean b = userInfoService.deleteUserInfoById(id);
+        return b.toString();
+    }
 
     @RequestMapping(value = "batchDeleteUserInfo",method = RequestMethod.POST)
     public String batchDeleteUserInfo(@RequestBody String[] ids){

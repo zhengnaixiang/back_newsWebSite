@@ -21,15 +21,15 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
             <h1 class="page-header">添加类别</h1>
             <div class="panel panel-default">
-                <div class="panel-heading">评论信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-heading">类别信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
                     <form role="form">
                         <div class="form-group">
                             <label for="dataText">类别名称</label>
-                            <input type="text" class="form-control" id="dataText" value="admin">
+                            <input type="text" class="form-control" id="NewClassesName" value="admin"><br>
                         </div>
-                        <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>添加</button>
-                        <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i>重置</button>
+                        <button type="button" class="btn btn-success" onclick="addClasses()"><i class="glyphicon glyphicon-edit"></i>添加</button>
+                        <button type="button" class="btn btn-danger" onclick="retreat()"><i class="glyphicon glyphicon-refresh"></i>返回</button>
                     </form>
                 </div>
             </div>
@@ -41,6 +41,56 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="script/docs.min.js"></script>
 <script type="text/javascript">
+
+    // 页面初始化，需要的父类分类列表下拉菜单
+    // $.ajax({
+    //     type: 'POST',
+    //     url: 'getParentClasses',
+    //     contentType: "application/json; charset=utf-8",
+    //     success: function (response) {
+    //         $(response).each(function (index, item) {
+    //             $("#parentClasses").append("<option value = " + item.class_id + ">" + item.class_name + "</option>")
+    //         });
+    //     },
+    //     error: function (response) {
+    //         console.log(response)
+    //     },
+    //     dataType: 'json'
+    // });
+
+    //添加分类
+    function addClasses() {
+        $.ajax({
+            type:'POST',
+            url:'addClasses',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(
+                {
+                "class_name": $("#NewClassesName").val().trim(),
+                }
+            ),
+            success: function (response) {
+                if (response == true) {
+                    alert("添加成功！");
+                    window.location.href = "classNews.html";
+                } else {
+                    alert("分类名字已存在!");
+                    window.location.href = "addClassNews.html";
+                }
+            },
+            error: function (response) {
+                alert("服务器错误！");
+                console.log(response);
+            },
+            dataType: 'json'
+
+        })
+    }
+
+    function retreat() {
+        window.location.href = "classNews.html";
+    }
+
     $(function () {
         $("#top").load("head.html");
         $("#left").load("left.html");

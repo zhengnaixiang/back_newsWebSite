@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.Classes.mapper.ClassesMapper">
+
+
+    <!--获取所有类别，用于校验添加和修改时候的分类名字是否重复-->
+    <select id="getAllClasses" parameterType="com.qf.Classes.pojo.Classes" resultType="com.qf.Classes.pojo.Classes">
+        select * from classes
+         <where>
+             <if test="class_name != null and class_name != ''">
+                 class_name = #{class_name}
+             </if>
+             and status = 1
+         </where>
+    </select>
+
+    <!--添加类别-->
+    <insert id="addClasses" parameterType="com.qf.Classes.pojo.Classes">
+        insert into classes(class_id,class_name,status) values (DEFAULT ,#{class_name},1)
+    </insert>
+
+    <!--模糊查询-->
+    <select id="getClassesList" parameterType="com.qf.Classes.pojo.Classes" resultType="com.qf.Classes.pojo.Classes">
+
+        select * from classes
+        <where>
+            <if test="class_name != null and class_name != ''">
+                class_name like #{class_name}
+            </if>
+            and status = 1
+        </where>
+    </select>
+
+    <!--根据classes对象的属性获取classes对象-->
+    <select id="getClassesBy" parameterType="com.qf.Classes.pojo.Classes" resultType="com.qf.Classes.pojo.Classes">
+        select * from classes
+        <where>
+            <if test="class_id != '' and class_id != null">
+                class_id = #{class_id}
+            </if>
+            <if test="class_name != '' and class_name != null">
+                and class_name = #{class_name}
+            </if>
+            and status = 1
+        </where>
+    </select>
+
+    <!--修改classes对象-->
+    <update id="updateClasses" parameterType="com.qf.Classes.pojo.Classes">
+        update classes set class_name = #{class_name} where class_id = #{class_id} and status = 1
+    </update>
+
+    <!--伪删除分类classes-->
+    <update id="deleteClasses" parameterType="Integer">
+        update classes set status = 0 where class_id = #{class_id}
+    </update>
+
+
+    <!--批量伪删除-->
+    <update id="deleteAll" parameterType="com.qf.Classes.vo.ClassesVo">
+        update classes set status = 0 where class_id in
+        <foreach item="class_id" collection="selected" open="(" separator="," close=")">
+                #{class_id}
+        </foreach>
+    </update>
+</mapper>

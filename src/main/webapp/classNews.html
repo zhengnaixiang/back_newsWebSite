@@ -36,14 +36,14 @@
                                 <div class="input-group-addon">名称</div>
                                 <input id="nameText" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">文章总数</div>
-                                <input id="countText" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
+                            <!--<div class="input-group">-->
+                                <!--<div class="input-group-addon">文章总数</div>-->
+                                <!--<input id="countText" class="form-control has-success" type="text" placeholder="请输入查询条件">-->
+                            <!--</div>-->
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button type="button" onclick="init()" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
-                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;" id="deleteAll"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
                     <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='addClassNews.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                     <br>
                     <hr style="clear:both;">
@@ -52,9 +52,8 @@
                             <thead>
                             <tr >
                                 <th width="30">ID</th>
-                                <th width="30"><input id="BigFlag" type="checkbox"></th>
+                                <th width="30"><input id="BigFlag" type="checkbox" onclick="clickAll()"></th>
                                 <th>名称</th>
-                                <th>文章总数</th>
                                 <th width="130">操作</th>
                             </tr>
                             </thead>
@@ -71,21 +70,21 @@
                             <!--</tr>-->
                             </tbody>
                         </table>
-                        <tfoot >
-                        <tr >
-                            <td>
-                                <ul class="pagination" align="center">
-                                    <li class="disabled"><a href="#">上一页</a></li>
-                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">下一页</a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                        </tfoot>
+                        <!--<tfoot >-->
+                        <!--<tr >-->
+                            <!--<td>-->
+                                <!--<ul class="pagination" align="center">-->
+                                    <!--<li class="disabled"><a href="#">上一页</a></li>-->
+                                    <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>-->
+                                    <!--<li><a href="#">2</a></li>-->
+                                    <!--<li><a href="#">3</a></li>-->
+                                    <!--<li><a href="#">4</a></li>-->
+                                    <!--<li><a href="#">5</a></li>-->
+                                    <!--<li><a href="#">下一页</a></li>-->
+                                <!--</ul>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tfoot>-->
                     </div>
                 </div>
             </div>
@@ -97,55 +96,62 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="script/docs.min.js"></script>
 <script type="text/javascript">
+
+
+    $(function () {
+        $("#top").load("head.html");
+        $("#left").load("left.html");
+    });
+
+    //初始化页面，获取classes列表
     init();
     function init(){
         var classesNametxt = $("#nameText").val().trim();
         $("#classesTable  tr:not(:first)").empty("");
-        console.log("初始化页面");
             $.ajax({
                 type: 'POST',
-                url: 'getClassesCountList',
+                url: 'getClassesList',
                 contentType: "application/json; charset=utf-8",
+                data:JSON.stringify({
+                    "class_name":classesNametxt
+                }),
                 success: function (response) {
-                    console.log("成功");
+                    console.log(response);
                     $(response).each(function (index, item) {
-                        $("#classesTbody").append("<tr>" +
+                        $("#classesTbody").append(
+                            "<tr>" +
                             "<td>" + item.class_id + "</td>" +
-                            "<td><input type=\"checkbox\"></td>" +
+                            "<td><input name=\"oneCheckBox\" class=\"ids\" type=\"checkbox\" onclick=\"clickOne()\" value='"+item.class_id+"'/></td>" +
                             "<td>" + item.class_name + "</td>" +
-                            "<td>" + item.num + "</td>" +
+                            // "<td>" + item.num + "</td>" +
                             "<td>" +
-                            "<button type=\"button\" onclick='ToEdit("+item.class_id+")'  class=\"btn btn-success btn-xs\" ><i class=\" glyphicon glyphicon-pencil\"></i>编辑</button>" +
-                            "<button type=\"button\" onclick='ToDelete("+item.class_id+")'  class=\"btn btn-danger btn-xs\" ><i class=\" glyphicon glyphicon-remove\"></i>删除</button>" +
-                            "</td>"+
+                            "<button type=\"button\" onclick='ToEdit(" + item.class_id + ")'  class=\"btn btn-success btn-xs\" ><i class=\" glyphicon glyphicon-pencil\"></i>编辑</button>" +
+                            "<button type=\"button\" onclick='ToDelete(" + item.class_id + ")'  class=\"btn btn-danger btn-xs\" ><i class=\" glyphicon glyphicon-remove\"></i>删除</button>" +
+                            "</td>" +
                             "</tr>"
                         )
-                        // <button type="button" class="btn btn-success btn-xs" onclick="ToEdit("+item.class_id+")" ><i class=" glyphicon glyphicon-pencil"></i>编辑</button>
-                        // <button type="button" class="btn btn-danger btn-xs" onclick="ToDelete("+item.class_name+")"><i class=" glyphicon glyphicon-remove"></i>删除</button>
-                    })
+                    });
                 },
                 error: function (response) {
-                    console.log("失败");
                     console.log(response)
                 },
-                dataType: "json"
+                dataType: 'json'
             });
     }
 
+
+    //修改页面的跳转，并把class_id传过去
     function ToEdit(class_id) {
         var edit = "editClassNews.html?class_id=" + class_id;
         window.location.href = edit;
     }
-
+    //伪删除
     function ToDelete(class_id) {
         $.ajax({
-            type:'POST',
-            url:'deleteClasses',
-            contentType:"application/json, charset=utf-8",
-            data:JSON.stringify({
-                "class_id":class_id
-            }),
-            success:function (response) {
+            type: 'GET',
+            url: 'deleteClasses?class_id='+class_id,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
                 if (response == true) {
                     alert("删除成功！");
                     window.location.href = "classNews.html";
@@ -157,41 +163,75 @@
                 console.log(response);
                 alert("服务器错误!");
             },
-            dataType:'json'
-        })
+            dataType: 'json'
+        });
     }
 
+    //全选，多选
+    function clickAll() {
+        $(".ids").prop("checked",$("#BigFlag").prop("checked"));
+    }
 
-    $(function () {
-        $("#top").load("head.html");
-        $("#left").load("left.html");
-
-        var total = $(".ids").length;
-        var count = 0;
-        var flag;
-        // 全选同步
-        $("#BigFlag").click(function () {
-            flag = $(this).prop("checked");
-            $(".ids").prop("checked", flag);
-            if (flag){
-                count = total;
-            } else {
-                count = 0;
+    function clickOne() {
+        var allChecked = true;
+        $(".ids").each(function () {
+            if ($(this).prop("checked") == false) {
+                allChecked = false;
             }
         });
+        if (allChecked) {
+            $("#BigFlag").prop("checked", true);
+        } else {
+            $("#BigFlag").prop("checked", false);
+        }
+    }
 
-        // 多选操作
-        $(".ids").click(function () {
-            flag = $(this).prop("checked");
-            if (flag) {
-                if (++count == total) {
-                    $("#BigFlag").prop("checked", true);
-                }
-            } else {
-                count--;
-                $("#BigFlag").prop("checked", false);
-            }
+    // 批量删除
+    $("#deleteAll").click(function () {
+        var selected = new Array();
+        $("[name = 'oneCheckBox']:checked").each(function () {
+            selected.push($(this).val())
         });
+        console.log(selected);
+        if (confirm("确定要删除所选中的分类吗？")) {
+            if (selected.length != 0) {
+                $.ajax({
+                    type:'POST',
+                    url:'deleteAll',
+                    contentType: "application/json; charset=utf-8",
+                    traditional:true,
+                    data:JSON.stringify({
+                        "selected":selected
+                    }),
+                    success: function (response) {
+                        if (response == true) {
+                            alert("删除成功!");
+                            window.location.href = "classNews.html";
+                        } else {
+                            alert("删除失败!");
+                        }
+
+                    },
+                    error:function (response) {
+                        console.log("服务器错误！");
+                        console.log(response);
+                    },
+                    dataType:'json'
+                });
+            } else {
+                alert("未选中任何选项");
+                return false
+            }
+
+        }
+
+
+
+
     });
+
+
+
+
 </script>
 </html>
