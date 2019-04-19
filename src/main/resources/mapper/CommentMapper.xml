@@ -46,4 +46,9 @@
     <update id="deleteSingle" parameterType="int">
        DELETE  from comment where comment_id=#{comment_id}
     </update>
+
+    <!--获取评论的总数-->
+    <select id="getCommentCount" resultType="int">
+        SELECT count(*) from comment
+    </select>
 </mapper>

@@ -63,4 +63,12 @@ public class CommentServiceImpol implements CommentService {
     public Boolean deleteSingle(int comment_id) {
         return commentMapper.deleteSingle(comment_id)>0?true:false;
     }
+
+    /**
+     * 获取评论总数
+     * @return
+     */
+    public int getCommentCount() {
+        return commentMapper.getCommentCount();
+    }
 }

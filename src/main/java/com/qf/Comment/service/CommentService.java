@@ -36,4 +36,10 @@ public interface CommentService {
      * @return 影响行数
      */
     public Boolean deleteSingle(int comment_id);
+
+    /**
+     * 获取评论的总数
+     * @return
+     */
+    public int getCommentCount();
 }

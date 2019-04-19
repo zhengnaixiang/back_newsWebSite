@@ -66,4 +66,13 @@ public class CommentController {
         return commentService.deleteSingle(comment_id).toString();
    }
 
+    /**
+     * 获取评论的总数
+     * @return
+     */
+   @RequestMapping(value = "getCommentCount",method = RequestMethod.POST)
+   public Integer getCommentCount(){
+        return commentService.getCommentCount();
+   }
+
 }

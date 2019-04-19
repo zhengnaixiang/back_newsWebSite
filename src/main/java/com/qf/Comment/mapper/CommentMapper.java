@@ -43,4 +43,10 @@ public interface CommentMapper {
      * @return 影响行数
      */
     public int deleteSingle(int comment_id);
+
+    /**
+     * 获取评论的总数
+     * @return
+     */
+    public int getCommentCount();
 }
