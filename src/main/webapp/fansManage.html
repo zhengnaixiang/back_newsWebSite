@@ -2,7 +2,7 @@
 <html lang="utf-8">
 <head>
     <meta charset="UTF-8">
-    <title>收益分析</title>
+    <title>粉丝管理</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -23,7 +23,7 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i>合计金额：<span id="totalMoney"></span></h3>
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i>数据列表<span id="totalMoney"></span></h3>
                 </div>
                 <div class="panel-body">
                     <form class="form-inline" role="form" style="float:left;">
@@ -34,11 +34,11 @@
                             </div>
                             <div class="input-group">
                                 <div class="input-group-addon">关注量</div>
-                                <input id="sum1" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                                <input id="to_user_id" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-addon">被关注量</div>
-                                <input id="sum2" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                                <input id="from_user_id" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
                         </div>
                         <button type="button" class="btn btn-warning" onclick="init(1,5)"><i class="glyphicon glyphicon-search"></i> 查询</button>
@@ -87,30 +87,32 @@
 
     /*进行页面数据的初始化加载*/
     function init(currentPage, pageSize) {
+        $("#tab").empty("");
+        $("#btns").empty("");
         $.ajax({
             type: 'POST',
-            url: 'getFansByUser',
+            url: 'getAllFansData',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 "currentPage": currentPage,
                 "pageSize": pageSize,
-                "user_id":$("#user_id").val().trim(),
                 "user_alias":$("#user_alias").val().trim(),
-                "sum":$("#sum1").val().trim(),
-                "sum":$("#sum2").val().trim()
+                "to_user_id":$("#to_user_id").val().trim(),
+                "from_user_id":$("#from_user_id").val().trim()
             }),
             success: function (responseText) {
                 $("#user_id").val("");
                 $("#user_alias").val("");
-                $("#sum").val("");
+                $("#to_user_id").val("");
+                $("#from_user_id").val("");
                 console.log(responseText);
                 //给表格添加数据
                 for (var i = 0; i < responseText.list.length; i++) {
                     $("#tab").append("<tr>\n" +
                         "                                <td>"+responseText.list[i].user_id+"</td>\n" +
                         "                                <td>"+responseText.list[i].user_alias+"</td>\n" +
-                        "                                <td>"+responseText.list[i].sum+"</td>\n" +
-                        "                                <td>"+responseText.list[i].sum+"</td>\n" +
+                        "                                <td>"+responseText.list[i].to_user_id+"</td>\n" +
+                        "                                <td>"+responseText.list[i].from_user_id+"</td>\n" +
                         "                            </tr>");
 
                 }

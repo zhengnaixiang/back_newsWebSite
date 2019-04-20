@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.fans.mapper.FansMapper">
+
+      <!--展示数据列表，按照粉丝数进行降序输出-->
+    <select id="getAllFansData" resultType="com.qf.fans.dto.FansDto" parameterType="com.qf.fans.vo.FansVo">
+    SELECT userin.user_id,userin.user_alias,follow1.from_user_id as to_user_id,follow2.to_user_id as from_user_id
+    from follow follow1,follow follow2,userinfo userin
+    <where>
+    userin.user_id=follow1.from_user_id and userin.user_id=follow2.to_user_id
+        <if test="user_alias!=null and user_alias != ''">
+            and user_alias like CONCAT("%",#{user_alias},"%")
+        </if>
+        <if test="to_user_id !=null and to_user_id !=''">
+            and follow1.from_user_id=#{to_user_id}
+        </if>
+        <if test="from_user_id !=null and from_user_id != ''">
+            and follow2.to_user_id=#{from_user_id}
+        </if>
+     ORDER BY follow2.to_user_id desc,follow1.from_user_id DESC
+    </where>
+    </select>
+
+</mapper>
