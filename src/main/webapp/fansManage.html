@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+    <meta charset="UTF-8">
+    <title>粉丝管理</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .tree li {
+            list-style-type: none;
+            cursor:pointer;
+        }
+        table tbody tr:nth-child(odd){background:#F4F4F4;}
+        table tbody td:nth-child(even){color:#C00;}
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div id="left"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i>数据列表<span id="totalMoney"></span></h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-inline" role="form" style="float:left;">
+                        <div class="form-group has-feedback">
+                            <div class="input-group">
+                                <div class="input-group-addon">用户名称</div>
+                                <input id="user_alias" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">关注量</div>
+                                <input id="to_user_id" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">被关注量</div>
+                                <input id="from_user_id" class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning" onclick="init(1,5)"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                    </form>
+                    <br>
+                    <hr style="clear:both;">
+                    <div class="table-responsive">
+                        <table class="table  table-bordered" id="tab">
+                            <thead>
+                            <tr >
+                                <th width="30">ID</th>
+                                <th>用户名称</th>
+                                <th>关注量</th>
+                                <th>被关注量</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <tfoot >
+                        <div class="row">
+                            <ul class="pagination" id="pagination">
+                                <li id="btns">
+                                </li>
+                            </ul>
+                            <p class="text-primary">当前第:<span id="currentPage"></span>页 共计<span
+                                    id="totalPage"></span>页&nbsp;&nbsp;&nbsp;<input type="text" id="t" style="width: 25px;height: 22px">
+                                <button class="btn-primary" onclick="goto()">跳转</button>
+                            </p>
+                            <p class="text-primary">总记录数:<span id="totalNums"></span></p>
+                        </div>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/docs.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#top").load("head.html");
+        $("#left").load("left.html");
+    });
+
+    /*进行页面数据的初始化加载*/
+    function init(currentPage, pageSize) {
+        $("#tab").empty("");
+        $("#btns").empty("");
+        $.ajax({
+            type: 'POST',
+            url: 'getAllFansData',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                "currentPage": currentPage,
+                "pageSize": pageSize,
+                "user_alias":$("#user_alias").val().trim(),
+                "to_user_id":$("#to_user_id").val().trim(),
+                "from_user_id":$("#from_user_id").val().trim()
+            }),
+            success: function (responseText) {
+                $("#user_id").val("");
+                $("#user_alias").val("");
+                $("#to_user_id").val("");
+                $("#from_user_id").val("");
+                console.log(responseText);
+                //给表格添加数据
+                for (var i = 0; i < responseText.list.length; i++) {
+                    $("#tab").append("<tr>\n" +
+                        "                                <td>"+responseText.list[i].user_id+"</td>\n" +
+                        "                                <td>"+responseText.list[i].user_alias+"</td>\n" +
+                        "                                <td>"+responseText.list[i].to_user_id+"</td>\n" +
+                        "                                <td>"+responseText.list[i].from_user_id+"</td>\n" +
+                        "                            </tr>");
+
+                }
+                //动态生成页数
+                for (var i = 0; i < responseText.lastPage; i++) {
+                    if (i == 0) {
+                        //首页
+                        var buttonFirst = $("<button onclick='goNormal(" + responseText.firstPage + ")' class='btn-primary'>首页</button>");
+                        //是否存有上页
+                        if (responseText.pageNum == 1) {
+                            var buttonPrep = $("<button onclick='goNormal(" + responseText.prePage + ")' class=\"btn-primary\" disabled='disabled'>上一页</button>")
+                        } else {
+                            var buttonPrep = $("<button onclick='goNormal(" + responseText.prePage + ")' class=\"btn-primary\">上一页</button>")
+                        }
+                        $("#btns").append(buttonFirst);
+                        $("#btns").append(buttonPrep);
+                    }
+                    if (i == responseText.pageNum - 1) {
+                        var button = $("<button onclick='goNormal(" + (i + 1) + ")' class=\"btn-success\">" + (i + 1) + "</button>")
+                    } else {
+                        var button = $("<button onclick='goNormal(" + (i + 1) + ")' class=\"btn-primary\">" + (i + 1) + "</button>")
+                    }
+                    $("#btns").append(button);
+                    if (i == responseText.lastPage - 1) {
+                        //尾页
+                        var buttonEnd = $("<button onclick='goNormal(" + responseText.lastPage + ")' class=\"btn-primary\">尾页</button>");
+                        if (responseText.pageNum == responseText.lastPage) {
+                            var buttonNext = $("<button onclick='goNormal(" + responseText.nextPage + ")' class=\"btn-primary\" disabled='disabled'>下一页</button>")
+                        } else {
+                            var buttonNext = $("<button onclick='goNormal(" + responseText.nextPage + ")' class=\"btn-primary\">下一页</button>")
+                        }
+                        $("#btns").append(buttonNext);
+                        $("#btns").append(buttonEnd);
+                    }
+
+                }
+                //当前页数
+                $("#currentPage").html(responseText.pageNum);
+                //总页数
+                $("#totalPage").html(responseText.lastPage);
+                //总记录数
+                $("#totalNums").html(responseText.total);
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
+    }
+
+    /*调用函数，显示数据*/
+    init(1,5);
+    /*下一页或者上一页的操作*/
+    function goNormal(n) {
+        $("#tab tr:not(:first)").empty("");
+        $("#btns").find("button").remove();
+        init(n, 5);
+    }
+
+    /*指定页面跳转的操作*/
+    function goto() {
+        $("#tab tr:not(:first)").empty("");
+        $("#btns").find("button").remove();
+        init($("#t").val(), 5);
+    }
+
+</script>
+</html>

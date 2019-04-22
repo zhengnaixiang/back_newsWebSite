@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.userInfo.mapper.UserInfoMapper">
+
+    <resultMap id="userInfoMap" type="com.qf.userInfo.pojo.UserInfo">
+        <id property="user_id" column="user_id"></id>
+        <result property="user_alias" column="user_alias"></result>
+        <result property="user_tel" column="user_tel"></result>
+        <result property="user_imageUrl" column="user_imageUrl"></result>
+        <result property="username" column="username"></result>
+        <result property="password" column="password"></result>
+        <result property="user_power" column="user_power"></result>
+    </resultMap>
+
+
+    <!--<select id="getUserInfoMapById" resultMap="userInfoMap" parameterType="int">-->
+        <!--select *-->
+        <!--from userinfo u,user_role ur,roleinfo r where u.userid = #{id} and u.status=1-->
+        <!--and ur.status = 1 and ur.userid = u.userid and r.roleid = ur.roleid-->
+    <!--</select>-->
+
+    <select id="loginCheck" parameterType="com.qf.userInfo.pojo.UserInfo" resultType="com.qf.userInfo.pojo.UserInfo">
+        SELECT * from userinfo where user_power != 0 and username = #{username} and password = #{password}
+    </select>
+
+    <insert id="addUserInfo" parameterType="com.qf.userInfo.pojo.UserInfo">
+        INSERT INTO userinfo values(DEFAULT ,#{user_alias},#{user_tel},#{user_imageUrl},#{username},#{password},#{user_power})
+    </insert>
+    <update id="deleteUserInfoById" parameterType="int">
+        update userinfo set user_power = 0 where user_id = #{user_id}
+    </update>
+    <update id="batchDeleteUserInfo" >
+        update userinfo set user_power = 0 where user_id in
+        <foreach collection="array" item="user_id" open="(" close=")" separator=",">
+            #{user_id}
+        </foreach>
+    </update>
+    <update id="updateUserInfo" parameterType="com.qf.userInfo.pojo.UserInfo">
+        update userinfo
+        <set>
+            <if test="user_alias !=null and user_alias != ''">
+                user_alias = #{user_alias},
+            </if>
+            <if test="user_tel !=null and user_tel != ''">
+                user_tel = #{user_tel},
+            </if>
+            <if test="user_imageUrl !=null and user_imageUrl != ''">
+                user_imageUrl = #{user_imageUrl},
+            </if>
+            <if test="username !=null and username != ''">
+                username = #{username},
+            </if>
+            <if test="user_power !=null and user_power != ''">
+                user_power = #{user_power},
+            </if>
+        </set>
+        where user_id = #{user_id}
+    </update>
+    <!--<select id="getAll" resultMap="userInfoMap">-->
+        <!--select * from userInfo where status = 1-->
+    <!--</select>-->
+    <select id="getUserInfoCount" resultType="int" parameterType="com.qf.userInfo.vo.UserInfoVo">
+        select count(*) from userinfo
+        <where>
+            user_power != 0
+            <if test="user_alias !=null and user_alias !=''">
+                and user_alias like #{user_alias}
+            </if>
+            <if test="user_tel !=null and user_tel !=''">
+                and user_tel like #{user_tel}
+            </if>
+            <if test="username !=null and username !=''">
+                and username like #{username}
+            </if>
+        </where>
+    </select>
+    <select id="userInfoList" resultMap="userInfoMap" parameterType="com.qf.userInfo.vo.UserInfoVo">
+        select * from userinfo
+        <where>
+            user_power != 0
+            <if test="user_alias !=null and user_alias !=''">
+                and user_alias like #{user_alias}
+            </if>
+            <if test="user_tel !=null and user_tel !=''">
+                and user_tel like #{user_tel}
+            </if>
+            <if test="username !=null and username !=''">
+                and username like #{username}
+            </if>
+        </where>
+        limit #{splitePageBean.start},#{splitePageBean.pageSize}
+    </select>
+    <select id="getUserInfoBy" resultMap="userInfoMap" parameterType="com.qf.userInfo.pojo.UserInfo">
+        select * from userinfo where user_power != 0
+        <if test="user_alias !=null and user_alias != ''">
+            and user_alias = #{user_alias}
+        </if>
+        <if test="user_tel !=null and user_tel != ''">
+            and user_tel = #{user_tel}
+        </if>
+        <if test="user_id !=null and user_id != ''">
+            and user_id = #{user_id}
+        </if>
+        <if test="username !=null and username != ''">
+            and username = #{username}
+        </if>
+    </select>
+    <select id="checkUserInfo" parameterType="com.qf.userInfo.pojo.UserInfo" resultType="int">
+        select count(*) from userinfo
+        <where>
+            <if test="user_alias !=null and user_alias != ''">
+                and user_alias = #{user_alias}
+            </if>
+            <if test="user_tel !=null and user_tel != ''">
+                and user_tel = #{user_tel}
+            </if>
+            <if test="user_id !=null and user_id != '' and user_id != 0">
+                and user_id != #{user_id}
+            </if>
+            <if test="username !=null and username != ''">
+                and username = #{username}
+            </if>
+        </where>
+    </select>
+</mapper>

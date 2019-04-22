@@ -19,22 +19,22 @@
                     <div class="col-xs-6 col-sm-3 placeholder">
                         <img data-src="holder.js/200x200/auto/sky" src="img/time.png" class="img-responsive" alt="Generic placeholder thumbnail">
                         <h4>当前时间</h4>
-                        <span class="text-muted">2019-4-13 00:00:00</span>
+                        <span class="text-muted" id="clock"></span>
                     </div>
                     <div class="col-xs-6 col-sm-3 placeholder">
                         <img data-src="holder.js//auto/vine" src="img/number.png" class="img-responsive" alt="Generic placeholder thumbnail">
                         <h4>新闻总数</h4>
-                        <span class="text-muted">40篇</span>
+                        <span class="text-muted" id="newsCount">40</span><span>篇</span>
                     </div>
                     <div class="col-xs-6 col-sm-3 placeholder">
                         <img data-src="holder.js/200x200/auto/sky" src="img/comment%20.png" class="img-responsive" alt="Generic placeholder thumbnail">
                         <h4>评论总数</h4>
-                        <span class="text-muted">100条</span>
+                        <span class="text-muted" id="commentCount">100</span><span>条</span>
                     </div>
                     <div class="col-xs-6 col-sm-3 placeholder">
                         <img data-src="holder.js/200x200/auto/vine" src="img/catogory.png" class="img-responsive" alt="Generic placeholder thumbnail">
                         <h4>类别数目</h4>
-                        <span class="text-muted">5类</span>
+                        <span class="text-muted" id="classCount">5</span><span>类</span>
                     </div>
                 </div>
             </div>
@@ -49,5 +49,75 @@
         $("#top").load("head.html");
         $("#left").load("left.html");
     });
+
+     /*获取当前时间*/
+    function showRealTime(){
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var date = d.getDate();
+        var days = new Array("日","一","二","三","四","五","六");
+        var day = d.getDay();
+        var hour = (d.getHours() < 10) ? ("0" + d.getHours()) : d.getHours();
+        var min = (d.getMinutes() < 10) ? ("0" + d.getMinutes()) : d.getMinutes();
+        var sec = (d.getSeconds() < 10) ? ("0" + d.getSeconds()) : d.getSeconds();
+        var now = year + "年" + month + "月" + date + "日<br>星期" + days[day] + "<br>" + hour + ":" + min + ":" + sec;
+        $("#clock").html(now);
+    }
+
+      /*设置定时器*/
+        window.setInterval('showRealTime()',1000);
+
+        /*获取评论的总体数量*/
+       function getCommentCount() {
+           $.ajax({
+               type: 'POST',
+               url:  'getCommentCount',
+               contentType: "application/json; charset=utf-8",
+               success: function(responseText){
+                   $("#commentCount").html(responseText);
+               } ,
+               error:function (message) {
+                   console.log(message);
+               },
+               dataType: 'json'
+           });
+       }
+
+       getCommentCount();
+       /*获取新闻的总数*/
+    function getNewsCount() {
+        $.ajax({
+            type: 'POST',
+            url:  'getCommentCount',
+            contentType: "application/json; charset=utf-8",
+            success: function(responseText){
+                $("#newsCount").html(responseText);
+            } ,
+            error:function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
+    }
+    getNewsCount();
+
+    /*获取类别的数目*/
+    function getClassCount() {
+        $.ajax({
+            type: 'POST',
+            url:  'getCommentCount',
+            contentType: "application/json; charset=utf-8",
+            success: function(responseText){
+                $("#classCount").html(responseText);
+            } ,
+            error:function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
+    }
+    getClassCount();
 </script>
+
 </html>

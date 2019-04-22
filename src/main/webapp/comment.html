@@ -45,14 +45,14 @@
                                 <input id="articleText" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button type="button" class="btn btn-warning" onclick="init(1,5)"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
-                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i>删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;"><i class="glyphicon glyphicon-plus"></i>新增</button>
+                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;" id="batchAll">删除</button>
+                    <button type="button" class="btn btn-primary" style="float:right;" onclick="turnToAddComment()">新增</button>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
-                        <table class="table  table-bordered">
+                        <table class="table  table-bordered" id="tab">
                             <thead>
                             <tr >
                                 <th width="30">ID</th>
@@ -68,7 +68,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>id</td>
+                              <!--  <td>id</td>
                                 <td><input class="ids" type="checkbox" value="id"/></td>
                                 <td>京雄城际铁路北京段具备铺轨条件</td>
                                 <td>admin</td>
@@ -79,24 +79,22 @@
                                 <td>
                                     <button type="button" class="btn btn-success btn-xs" onclick="toEditorComment()"><i class=" glyphicon glyphicon-pencil"></i>编辑</button>
                                     <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i>删除</button>
-                                </td>
+                                </td>-->
                             </tr>
                             </tbody>
                         </table>
                         <tfoot >
-                        <tr >
-                            <td>
-                                <ul class="pagination" align="center">
-                                    <li class="disabled"><a href="#">上一页</a></li>
-                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">下一页</a></li>
-                                </ul>
-                            </td>
-                        </tr>
+                        <div class="row">
+                            <ul class="pagination" id="pagination">
+                                <li id="btns">
+                                </li>
+                            </ul>
+                            <p class="text-primary">当前第:<span id="currentPage"></span>页 共计<span
+                                    id="totalPage"></span>页&nbsp;&nbsp;&nbsp;<input type="text" id="t" style="width: 25px;height: 22px">
+                                <button class="btn-primary" onclick="goto()">跳转</button>
+                            </p>
+                            <p class="text-primary">总记录数:<span id="totalNums"></span></p>
+                        </div>
                         </tfoot>
                     </div>
                 </div>
@@ -112,6 +110,96 @@
     $(function () {
         $("#top").load("head.html");
         $("#left").load("left.html");
+    });
+
+    /*进行页面数据的初始化加载*/
+    function init(currentPage, pageSize) {
+        $.ajax({
+            type: 'POST',
+            url: 'getAllComments',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                "currentPage": currentPage,
+                "pageSize": pageSize,
+                "comment_date":$("#dateText").val().trim(),
+                "user_alias":$("#writerText").val().trim(),
+                "np_title":$("#articleText").val().trim()
+            }),
+            success: function (responseText) {
+                $("#dateText").val("");
+                $("#writerText").val("");
+                $("#articleText").val("");
+                console.log(responseText);
+                //给表格添加数据
+                var theStatus;
+                for (var i = 0; i < responseText.list.length; i++) {
+                    if (responseText.list[i].status==1){
+                        theStatus="显示";
+                    } else{
+                        theStatus="删除";
+                    }
+
+                    $("#tab").append("<tr>\n" +
+                        "                                <td>"+responseText.list[i].comment_id+"</td>\n" +
+                        "                                <td><input class=\"ids\" type=\"checkbox\" value="+responseText.list[i].comment_id+" /></td>\n" +
+                        "                                <td>"+responseText.list[i].comment_content+"</td>\n" +
+                        "                                <td>"+responseText.list[i].user_alias+"</td>\n" +
+                        "                                <td>"+responseText.list[i].np_title+"</td>\n" +
+                        "                                <td>"+responseText.list[i].comment_date+"</td>\n" +
+                        "                                <td>"+theStatus+"</td>\n" +
+                        "                                <td>反人类</td>\n" +
+                        "                                <td>\n" +
+                        "                                    <button type=\"button\" class=\"btn btn-success btn-xs\" onclick='turnToAuthorPage("+responseText.list[i].np_id+")'><i class=\" glyphicon glyphicon-pencil\"></i>查看</button>\n" +
+                        "                                    <button type=\"button\" class=\"btn btn-danger btn-xs\" onclick='deleteObject("+responseText.list[i].comment_id+")'><i class=\" glyphicon glyphicon-remove\"></i>删除</button>\n" +
+                        "                                </td>\n" +
+                        "                            </tr>");
+                }
+
+                //动态生成页数
+                for (var i = 0; i < responseText.lastPage; i++) {
+                    if (i == 0) {
+                        //首页
+                        var buttonFirst = $("<button onclick='goNormal(" + responseText.firstPage + ")' class='btn-primary'>首页</button>");
+                        //是否存有上页
+                        if (responseText.pageNum == 1) {
+                            var buttonPrep = $("<button onclick='goNormal(" + responseText.prePage + ")' class=\"btn-primary\" disabled='disabled'>上一页</button>")
+                        } else {
+                            var buttonPrep = $("<button onclick='goNormal(" + responseText.prePage + ")' class=\"btn-primary\">上一页</button>")
+                        }
+                        $("#btns").append(buttonFirst);
+                        $("#btns").append(buttonPrep);
+                    }
+                    if (i == responseText.pageNum - 1) {
+                        var button = $("<button onclick='goNormal(" + (i + 1) + ")' class=\"btn-success\">" + (i + 1) + "</button>")
+                    } else {
+                        var button = $("<button onclick='goNormal(" + (i + 1) + ")' class=\"btn-primary\">" + (i + 1) + "</button>")
+                    }
+                    $("#btns").append(button);
+                    if (i == responseText.lastPage - 1) {
+                        //尾页
+                        var buttonEnd = $("<button onclick='goNormal(" + responseText.lastPage + ")' class=\"btn-primary\">尾页</button>");
+                        if (responseText.pageNum == responseText.lastPage) {
+                            var buttonNext = $("<button onclick='goNormal(" + responseText.nextPage + ")' class=\"btn-primary\" disabled='disabled'>下一页</button>")
+                        } else {
+                            var buttonNext = $("<button onclick='goNormal(" + responseText.nextPage + ")' class=\"btn-primary\">下一页</button>")
+                        }
+                        $("#btns").append(buttonNext);
+                        $("#btns").append(buttonEnd);
+                    }
+
+                }
+                //当前页数
+                $("#currentPage").html(responseText.pageNum);
+                //总页数
+                $("#totalPage").html(responseText.lastPage);
+                //总记录数
+                $("#totalNums").html(responseText.total);
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
 
         var total = $(".ids").length;
         var count = 0;
@@ -139,10 +227,91 @@
                 $("#BigFlag").prop("checked", false);
             }
         });
+
+    }
+
+    /*调用函数，显示数据*/
+    init(1,5);
+    /*下一页或者上一页的操作*/
+    function goNormal(n) {
+        $("#tab tr:not(:first)").empty("");
+        $("#btns").find("button").remove();
+        init(n, 5);
+    }
+
+    /*指定页面跳转的操作*/
+    function goto() {
+        $("#tab tr:not(:first)").empty("");
+        $("#btns").find("button").remove();
+        init($("#t").val(), 5);
+    }
+
+
+    /*进行批量删除的操作*/
+    $("#batchAll").click(function () {
+        //1.创建一个数组存储多个id属性
+        var ids = new Array();
+        //2.获取用户选中的对象
+        $(".ids:checked").each(function () {
+            //获取val值
+            var id = $(this).val();
+            //把val值添加进数组
+            ids.push(id);
+        })
+
+        $.ajax({
+            type: 'POST',
+            url:  'batchDelComment',
+            contentType: "application/json; charset=utf-8",
+            data:JSON.stringify({
+                "commentIds":ids
+            }) ,
+            success: function(responseText){
+                console.log(responseText);
+                if (responseText==true){
+                    window.location.href="comment.html";
+                } else{
+                    alert("删除失败");
+                }
+            } ,
+            error:function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
     });
 
-    function toEditorComment() {
-        window.location.href="editComment.html";
+    /*进行单个删除的操作*/
+    function deleteObject(comment_id) {
+        $.ajax({
+            type: 'GET',
+            url:  'deleteSingle?comment_id='+comment_id,
+            contentType: "application/json; charset=utf-8",
+            success: function(responseText){
+                console.log(responseText);
+                if (responseText==true){
+                    window.location.href="comment.html";
+                } else{
+                    alert("删除失败");
+                }
+            } ,
+            error:function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
     }
+
+    /*查看评论，直接跳转到阅读新闻的页面*/
+    function turnToAuthorPage(np_id) {
+        var url="readNews.html?np_id="+np_id
+        window.location.href=url;
+    }
+
+    /*进入跳转到增加评论界面的操作*/
+    function turnToAddComment() {
+        window.location.href="addComment.html";
+    }
+
 </script>
 </html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.Comment.mapper.CommentMapper">
+
+    <!--将新闻的评论数据取出，集成到一张表上-->
+    <select id="getAllComments" resultType="com.qf.Comment.dto.CommentDto" parameterType="com.qf.Comment.vo.Page">
+      SELECT comn.comment_id,comn.comment_content, userin.user_alias,newp.np_title,comn.comment_date,comn.status,newp.np_id
+        from comment comn,userinfo userin,newpaper newp
+        where comn.user_id=userin.user_id and comn.np_id=newp.np_id
+        <if test="comment_date !=null and comment_date != ''">
+            and comn.comment_date like CONCAT("%",#{comment_date},"%")
+        </if>
+        <if test="user_alias !=null and user_alias !=''">
+            and userin.user_alias like CONCAT("%",#{user_alias},"%")
+        </if>
+        <if test="np_title !=null and np_title != ''">
+            and newp.np_title like CONCAT("%",#{np_title},"%")
+        </if>
+    </select>
+
+    <!--增加评论，将其保存到数据库中-->
+    <insert id="addCommentByUser" parameterType="com.qf.Comment.pojo.Comment">
+      insert into comment(parent_id,np_id,comment_content,user_id)
+      values(#{parent_id},#{np_id},#{comment_content},#{user_id})
+    </insert>
+
+    <!--通过新闻的标题找到对应id-->
+    <select id="getNp_idByNp_title" parameterType="com.qf.Comment.pojo.Comment">
+    SELECT np_id from newpaper where np_title=#{np_title}
+    </select>
+
+    <!--进行删除删除评论的操作，批量-->
+    <update id="batchDelComment" parameterType="com.qf.Comment.vo.CommentVo">
+        DELETE  from comment
+        <where>
+            comment_id in
+            <foreach collection="commentIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </update>
+
+    <!--进行单个删除-->
+    <update id="deleteSingle" parameterType="int">
+       DELETE  from comment where comment_id=#{comment_id}
+    </update>
+
+    <!--获取评论的总数-->
+    <select id="getCommentCount" resultType="int">
+        SELECT count(*) from comment
+    </select>
+</mapper>

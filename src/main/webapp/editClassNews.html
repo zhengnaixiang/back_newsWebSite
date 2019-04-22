@@ -19,21 +19,17 @@
     <div class="row">
         <div id="left"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
-            <h1 class="page-header">添加类别</h1>
+            <h1 class="page-header">修改类别</h1>
             <div class="panel panel-default">
-                <div class="panel-heading">评论信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-heading">类别信息<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
                     <form role="form">
                         <div class="form-group">
                             <label for="dataText">类别名称</label>
                             <input type="text" class="form-control" id="dataText" value="admin">
                         </div>
-                        <div class="form-group">
-                            <label for="countText">文章总数</label>
-                            <input type="text" class="form-control" id="countText" value="admin">
-                        </div>
-                        <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>修改</button>
-                        <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i>重置</button>
+                        <button type="button" onclick="updateClassesBtn()" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>修改</button>
+                        <button type="button" class="btn btn-danger" onclick="retreat()"><i class="glyphicon glyphicon-refresh"></i>返回</button>
                     </form>
                 </div>
             </div>
@@ -49,5 +45,57 @@
         $("#top").load("head.html");
         $("#left").load("left.html");
     });
+
+    //获取classNews.html传过来的class_id
+    var class_id = window.location.search;
+    class_id = class_id.split("=")[1];
+
+    //根据class_id获取对象，并在修改页面回显信息
+    $.ajax({
+        type: 'POST',
+        url: 'initClasses',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            "class_id": class_id
+        }),
+        success: function (response) {
+            $("#dataText").val(response.class_name)
+        },
+        error: function (response) {
+            console.log(response)
+        },
+        dataType: 'json'
+    });
+
+    //修改分类
+    function updateClassesBtn() {
+        $.ajax({
+            type: 'POST',
+            url:'updateClasses',
+            contentType:"application/json; charset=utf-8",
+            data:JSON.stringify({
+                "class_id": class_id,
+                "class_name": $("#dataText").val().trim()
+            }),
+            success:function (response) {
+                if (response == true) {
+                    alert("修改成功！");
+                    window.location.href = "classNews.html";
+                }else {
+                    alert("分类名字已存在！");
+                    window.location.href = "editClassNews.html?class_id="+class_id;
+                }
+            },
+            error:function (response) {
+                alert("服务器错误!");
+                console.log(response);
+            },
+            dataType:'json'
+        })
+    }
+
+    function retreat() {
+        window.location.href = "classNews.html";
+    }
 </script>
 </html>

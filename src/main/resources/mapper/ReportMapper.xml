@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.report.mapper.ReportMapper">
+    <insert id="addObject" parameterType="com.qf.report.pojo.Report">
+        insert into report(report_user_id,user_id,np_id,comment_id,report_content) values(#{report_user_id},#{user_id},#{np_id},#{comment_id},#{report_content})
+    </insert>
+    
+    <update id="deleteObject" parameterType="int">
+        update report set status = 0 where report_id = #{report_id}
+    </update>
+
+    <select id="getListBy" parameterType="com.qf.report.pojo.Report" resultType="com.qf.report.pojo.Report">
+        select * from report
+        <where>
+            <if test="report_user_id!=null and report_user_id!=''">
+                report_user_id = #{report_user_id},
+            </if>
+            <if test="user_id!=null and user_id!=''">
+                user_id = #{user_id},
+            </if>
+            <if test="report_id!=null and report_id!=''">
+                report_id = #{report_id},
+            </if>
+            <if test="comment_id!=null and comment_id!=''">
+                comment_id = #{comment_id},
+            </if>
+            <if test="np_id!=null and np_id!=''">
+                np_id = #{np_id},
+            </if>
+            <if test="date!=null and date!=''">
+                date = #{date},
+            </if>
+            <if test="report_content!=null and report_content!=''">
+                report_content = #{report_content},
+            </if>
+
+            and status=1
+        </where>
+    </select>
+
+    <update id="dealReportByCommentId" parameterType="int">
+        update comment c2 set status = 0 where c2.comment_id  in
+        (select comment_id from (select c.comment_id from report r, comment c where r.comment_id = c.comment_id and r.report_id =#{report_id}) a)
+    </update>
+
+
+    
+</mapper>
