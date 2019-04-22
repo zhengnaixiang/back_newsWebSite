@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.newpaper.mapper.TbClass_newpaperMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.newpaper.pojo.TbClass_newpaper" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="cn_id" property="cnId" jdbcType="INTEGER" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="np_id" property="npId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    cn_id, class_id, np_id
+  </sql>
+</mapper>

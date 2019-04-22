@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.newpaper.mapper.TbNewpaperMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.newpaper.pojo.TbNewpaper" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="np_id" property="npId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_alias" property="userAlias" jdbcType="VARCHAR" />
+    <result column="np_title" property="npTitle" jdbcType="VARCHAR" />
+    <result column="np_date" property="npDate" jdbcType="DATE" />
+    <result column="np_image" property="npImage" jdbcType="VARCHAR" />
+    <result column="np_content" property="npContent" jdbcType="VARCHAR" />
+    <result column="np_reading" property="npReading" jdbcType="INTEGER" />
+    <result column="np_likes" property="npLikes" jdbcType="INTEGER" />
+    <result column="np_status" property="npStatus" jdbcType="BIT" />
+  </resultMap>
+
+  <!--   分页模糊查询 -->
+    <select id="pageFuzzyselect" resultType="com.qf.newpaper.dto.TbNewPaperDto">
+        SELECT * FROM(SELECT b.*,class_name AS className FROM(SELECT a.* FROM (SELECT
+        np.np_id,np.np_title,np.user_alias,np.np_date,np.np_likes
+        FROM newpaper np WHERE np.np_status = 1
+        )as a GROUP BY np_id)AS b
+        INNER JOIN classes c1,newpaper np1 WHERE b.np_id = np1.np_id AND c1.class_id = np1.classes GROUP BY np_id)AS q
+
+        <if test="search!=null and search !=''">
+            WHERE np_title like binary '%${search}%'
+        </if>
+        <if test="search!=null and search !=''">
+            or user_alias like binary '%${search}%'
+        </if>
+        <if test="search!=null and search !=''">
+            or np_date like binary '%${search}%'
+        </if>
+        <if test="orderStr != null and orderStr.length() > 0">
+            ${orderStr}
+        </if>
+    </select>
+  <!--<select id="pageFuzzyselect" resultType="com.qf.newpaper.dto.TbNewPaperDto">
+      SELECT * FROM(SELECT b.*,class_name AS className FROM(SELECT a.*,count(np_id)AS sunComment FROM (SELECT
+      np.np_id,np.np_title,np.user_alias,np.np_date,np.np_likes
+      FROM newpaper np
+      LEFT JOIN
+      `comment` c ON np.np_id = c.np_id WHERE np.np_status = 1 AND c.`status` = 1 ORDER BY np.np_id )as a GROUP BY np_id)AS b
+      INNER JOIN class c1,class_newpaper cn,newpaper np1 WHERE b.np_id = cn.np_id AND c1.class_id = cn.class_id GROUP BY np_id)AS q
+
+      <if test="search!=null and search !=''">
+          WHERE np_title like binary '%${search}%'
+      </if>
+      <if test="search!=null and search !=''">
+          or user_alias like binary '%${search}%'
+      </if>
+      <if test="search!=null and search !=''">
+          or np_date like binary '%${search}%'
+      </if>
+    <if test="orderStr != null and orderStr.length() > 0">
+      ${orderStr}
+    </if>
+  </select>-->
+
+    <!-- 删除新闻 -->
+    <update id="deleteNews">
+        update newpaper np,`comment` co set np.np_status = 0
+        where np.np_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <!--and co.np_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>-->
+
+    </update>
+
+    <!--  查询新闻属性 -->
+    <select id="watchNews" resultType="com.qf.newpaper.dto.WatchNewsDto">
+        SELECT np.np_title AS title,np.np_content AS newContent,np.np_image AS img,
+			 np.np_date AS time,np.np_likes AS likes
+        FROM newpaper np,`comment` c
+        WHERE np.np_id = #{npId} GROUP BY np_title
+    </select>
+
+    <!--  查询新闻评论 -->
+    <select id="newsComment" resultType="com.qf.newpaper.dto.TbUserCommentDto">
+        SELECT c.comment_content AS commonContent,c.comment_date AS commonDate,u.user_imageUrl AS userImageurl
+        FROM `comment` c,userinfo u
+        WHERE c.np_id = #{npId} AND c.`status` = 1
+        AND c.user_id = u.user_id
+    </select>
+
+    <!--  查询新闻属性 -->
+    <select id="watchNewss" resultType="com.qf.newpaper.dto.WatchNewssDto">
+        SELECT np.np_title AS title,np.np_content AS newContent,np.np_image AS img,c.class_name AS className
+        FROM newpaper np, classes c
+        WHERE
+        np.np_id = #{npId} AND c.class_id = (SELECT classes FROM newpaper WHERE np_id = #{npId} )
+        GROUP BY np.np_id
+    </select>
+
+    <!--  查询新闻分类 -->
+    <select id="WatchClassName" resultType="com.qf.newpaper.dto.WatchClassNameDto">
+        SELECT class_name AS className,class_id AS classId FROM classes
+    </select>
+
+    <!--  编辑新闻 -->
+    <update id="editNews">
+        UPDATE newpaper np
+        SET np.np_title=#{title},np.np_content=#{newContent},
+        np.classes=#{classId}
+        WHERE np.np_id=#{npId}
+
+    </update>
+
+    <!--  编辑新闻图片 -->
+    <update id="editImg">
+        UPDATE newpaper np
+        SET np.np_image=#{img}
+        WHERE np.np_id=#{npId}
+
+    </update>
+
+    <select id="commentAll" resultType="com.qf.newpaper.dto.CommentAllDto">
+        SELECT c.np_id,COUNT(c.np_id)AS sunComment FROM `comment` c WHERE `status` = 1 GROUP BY np_id
+    </select>
+
+
+
+
+
+
+
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    np_id, user_id, user_alias, np_title, np_date, np_image, np_content, np_reading,
+    np_likes, np_status
+  </sql>
+</mapper>

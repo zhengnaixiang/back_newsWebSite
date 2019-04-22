@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.newpaper.mapper.TbPowerMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.newpaper.pojo.TbPower" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="power_id" property="powerId" jdbcType="INTEGER" />
+    <result column="user_power" property="userPower" jdbcType="INTEGER" />
+    <result column="menu_id" property="menuId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    power_id, user_power, menu_id
+  </sql>
+</mapper>

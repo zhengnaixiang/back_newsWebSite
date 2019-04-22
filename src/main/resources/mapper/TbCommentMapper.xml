@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.newpaper.mapper.TbCommentMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.newpaper.pojo.TbComment" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="common_date" property="commonDate" jdbcType="VARCHAR" />
+    <result column="common_content" property="commonContent" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="np_id" property="npId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    comment_id, common_date, common_content, user_id, np_id, status
+  </sql>
+</mapper>
