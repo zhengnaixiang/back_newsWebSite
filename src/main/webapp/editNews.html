@@ -23,22 +23,169 @@
         <div id="left"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
             <h2 class="page-header">修改新闻</h2>
-            <div>
-                <h4>新闻标题:</h4>
-                <input type="text" id="headLine" style="width: 100%" height="50%" />
-            </div>
-            <div>
-                <h5>新闻分类:</h5>
-                <select style="width: 100%" id="classNews" style="height: 50px">
-                    <option >1</option>
-                    <option>2</option>
-                </select>
-            </div>
-            <div id="editor" style="margin-top: 15px"></div>
-            <input type="text" id="keyword" style="width: 100%" height="50%" placeholder="输入内容回车添加标签" style=""/>
-            <input type="button" id="submit" value="提交" style="width: 60px" style="margin-top: 20px" />
+            <form id="form">
+                <div>
+                    <h4>新闻标题:</h4>
+                    <input type="text" id="headLine" name="headLine" style="width: 100%" height="50%" />
+                </div>
+                <div>
+                    <h5>新闻分类:</h5>
+                    <select style="width: 100%" style="height: 50px" id="classNews">
+                        <!--<option>1</option>
+                        <option>2</option>-->
+                    </select>
+                </div>
+                <div id="editor" style="margin-top: 15px">
+                    <div id='edit'>
+
+                    </div>
+                </div>
+            </form>
+
+            <form action="../newpaper/upload" enctype="multipart/form-data" method="post">
+                更换新闻图片:<input type="file" name="file"/>
+                <input type="hidden" name="npId" id="npId" value=""/>
+                <input type="submit" value="上传"/><br/><br/><br/>
+            </form>
+            <!--<img src="images/sin2.jpg"/><br/>-->
+            <!--<input type="text" id="keyword" style="width: 100%" height="50%" placeholder="输入内容回车添加标签" style=""/>-->
+            <input type="button" name="ww" id="submit" value="提交" style="width: 60px" style="margin-top: 20px" />
             <input type="button" id="reSet" value="重置" style="width: 60px" style="margin-top: 20px"/>
+
+            <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
+            <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
             <script>
+                $('#form').validate({
+                    rules:{
+                        headLine:{
+                            required: true,
+                            minlength: 2,
+                            maxlength: 100
+                        },
+
+                    }
+                })
+
+                $.extend($.validator.messages, {
+                    required: "这是必填字段",
+                    remote: "请修正此字段",
+                    email: "请输入有效的电子邮件地址",
+                    url: "请输入有效的网址",
+                    date: "请输入有效的日期",
+                    dateISO: "请输入有效的日期 (YYYY-MM-DD)",
+                    number: "请输入有效的数字",
+                    digits: "只能输入数字",
+                    creditcard: "请输入有效的信用卡号码",
+                    equalTo: "你的输入不相同",
+                    extension: "请输入有效的后缀",
+                    maxlength: $.validator.format("最多可以输入 {0} 个字符"),
+                    minlength: $.validator.format("最少要输入 {0} 个字符"),
+                    rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的字符串"),
+                    range: $.validator.format("请输入范围在 {0} 到 {1} 之间的数值"),
+                    max: $.validator.format("请输入不大于 {0} 的数值"),
+                    min: $.validator.format("请输入不小于 {0} 的数值")
+                });
+
+
+                function load() {
+                    /*var attr = $("#submit").attr("name");
+                    alert(attr)*/
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/newpaper/watchClassName",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,  //禁用缓存
+                        success: function (result) {
+                            console.log(result);
+                            // alert(result[1].className)
+
+                            $(result).each(function (index,item) {
+                                var classNews = document.getElementById("classNews");
+                                var option = document.createElement('option');
+
+                                // alert(option.value)
+                                option.innerText = item.className;
+                                // alert(option.innerText)
+                                option.id =item.classId;
+                                // alert(option.id)
+                                // alert(option.text)
+                                classNews.appendChild(option);
+
+                            })
+                        }
+                    })
+
+
+                    var param = {};
+                    var string = window.location.href.split("=")[1];
+                    $("#npId").attr("value",string);
+                    // alert($("#npId").attr("value"));
+
+                    // alert(string)
+                    param.npId = string;
+                    var headLine = document.getElementById("headLine");
+                    var edit = document.getElementById("edit");
+                    var classNews = document.getElementById("classNews");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/newpaper/watchNewss",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,  //禁用缓存
+                        data: JSON.stringify(param),  //传入组装的参数
+                        dataType: "json",
+                        success: function (result) {
+                            console.log(result);
+                            headLine.value = result.title;
+                            edit.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + result.newContent;
+                            // alert(classNews.value = result.className)
+                            classNews.value = result.className;
+                        }
+                    })
+                };
+                load();
+
+                $("#submit").click(function () {
+                    var headLine = document.getElementById("headLine").value;
+                    var edit = document.getElementById("edit").outerText;
+                    var classId = $("#classNews").change().find("option:checked").attr("id");
+                    // var classId = document.getElementById("classNews").value;
+                    // var className = document.getElementById("classNews").text;
+                    alert(headLine)
+                    alert(edit)
+                    // alert(classId)
+                    alert(":"+classId)
+                    var npId = window.location.href.split("=")[1];
+                    // alert(npId)
+                    var param = {};
+                    param.title = headLine;
+                    param.newContent = edit;
+                    param.npId = npId;
+                    param.classId = classId;
+                    $.ajax({
+                        type: "POST",
+                        url: "/newpaper/editNews",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,  //禁用缓存
+                        data: JSON.stringify(param),  //传入组装的参数
+                        dataType: "json",
+                        success: function (result) {
+                            console.log(result);
+                            if (result.result > 0){
+                                alert("修改成功!!!!!!!");
+
+                            } else {
+                                alert("修改失败!!!!!!");
+                            }
+                        }
+                    })
+                })
+
+                $("#reSet").click(function () {
+                    load();
+                })
+
                 var E = window.wangEditor;
                 var editor = new E('#editor'); // 两个参数也可以传入 elem 对象，class 选择器
                 //开启debug模式
