@@ -23,5 +23,5 @@ public interface AllNewsService {
 
     public Integer editNews(EditNewsVo editNewsVo);
 
-    public Integer editImg(String img,Integer npId);
+    public Integer editImg(String img, Integer npId);
 }

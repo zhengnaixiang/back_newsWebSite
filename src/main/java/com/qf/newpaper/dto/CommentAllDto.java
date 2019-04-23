@@ -13,7 +13,7 @@ public class CommentAllDto {
     public String toString() {
         return "CommentAllDto{" +
                 "npId=" + npId +
-                ", sunComment=" + sunComment +
+                ",  sunComment=" + sunComment +
                 '}';
     }
 

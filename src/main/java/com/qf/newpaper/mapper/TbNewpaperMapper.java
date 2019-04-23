@@ -13,8 +13,7 @@ public interface TbNewpaperMapper {
      * @param searchName
      * @return
      */
-    public List<TbNewPaperDto> pageFuzzyselect
-            (@Param("orderStr") String orderStr, @Param("search") String searchName);
+    public List<TbNewPaperDto> pageFuzzyselect(@Param("orderStr") String orderStr, @Param("search") String searchName);
     /*
     SELECT * FROM(SELECT b.*,class_name FROM(SELECT a.*,count(np_id)AS sunComment FROM (SELECT
  		np.np_id,np.np_title,np.user_alias,np.np_date,np.np_likes
@@ -92,7 +91,7 @@ INNER JOIN
     public Integer editNews(EditNewsVo editNewsVo);
 
 
-    public Integer editImg(@Param("img") String img,@Param("npId") Integer npId);
+    public Integer editImg(@Param("img") String img, @Param("npId") Integer npId);
 
     public List<CommentAllDto> commentAll();
 }

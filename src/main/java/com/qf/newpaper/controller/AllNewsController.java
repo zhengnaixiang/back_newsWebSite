@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Api(tags = "新闻模块")
+@Api(tags = "新闻的模块")
 @Controller
 @RequestMapping(value = "/newpaper")
 public class AllNewsController {
