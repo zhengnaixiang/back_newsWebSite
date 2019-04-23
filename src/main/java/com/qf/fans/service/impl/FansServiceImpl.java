@@ -15,10 +15,9 @@ import java.util.List;
 @Service
 public class FansServiceImpl implements FansService {
 
-  /*  @Autowired
-    FansMapper fansMapper;*/
-  private static ApplicationContext context=new ClassPathXmlApplicationContext("spring-mybatis.xml","spring-service.xml");
-    private static FansMapper fansMapper=context .getBean(FansMapper.class);
+    @Autowired
+    FansMapper fansMapper;
+
 
     /**
      * 获取粉丝分析列表的数据，并按照粉丝数降序输出

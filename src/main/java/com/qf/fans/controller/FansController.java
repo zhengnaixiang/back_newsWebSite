@@ -20,10 +20,9 @@ import java.util.List;
 @RestController
 public class FansController {
 
-//    @Autowired
-//    FansService fansService;
-    private static ApplicationContext context=new ClassPathXmlApplicationContext("spring-mybatis.xml","spring-service.xml");
-    private static FansService fansService=context .getBean(FansService.class);
+    @Autowired
+    FansService fansService;
+
 
     /**
      * 获取粉丝分析的列表数据，按照粉丝数进行降序输出，并进行分页处理

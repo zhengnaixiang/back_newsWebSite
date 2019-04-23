@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.newpaper.mapper.AddNewPapeprDao">
+    <!--创建一对多映射-->
+    <resultMap id="addNewMapper" type="com.qf.newpaper.pojo.NewPaperType">
+        <id property="class_id" column="class_id"></id>
+        <result property="class_name" column="class_name"></result>
+        <collection property="NewPaper" ofType="com.qf.newpaper.pojo.NewPaper">
+            <id property="np_id" column="np_id"></id>
+            <result property="user_alias" column="user_alias"></result>
+            <result property="np_title" column="np_title"></result>
+            <result property="np_date" column="np_date"></result>
+            <result property="np_image" column="np_image"></result>
+            <result property="np_content" column="np_content"></result>
+
+        </collection>
+    </resultMap>
+    <insert id="addNew"    parameterType="com.qf.newpaper.pojo.NewPaper">
+        insert into newpaper(user_alias,np_title,np_date,np_image,np_content)values(#{user_alias},#{np_title},#{np_date},#{np_image},#{np_content})
+
+    </insert>
+    <select id="showClass" resultType="com.qf.newpaper.pojo.NewPaperType">
+        select * from class
+    </select>
+
+
+</mapper>

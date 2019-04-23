@@ -2,7 +2,8 @@ package com.qf.newpaper.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+
+import com.github.pagehelper.util.StringUtil;
 import com.qf.newpaper.dto.*;
 import com.qf.newpaper.mapper.TbNewpaperMapper;
 import com.qf.newpaper.service.AllNewsService;

@@ -23,10 +23,10 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
     <!--4、配置视图解析器-->
-   <!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/"></property>
-        <property name="suffix" value=".html"></property>
-    </bean>-->
+    <!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <property name="prefix" value="/"></property>
+         <property name="suffix" value=".html"></property>
+     </bean>-->
 
     <!-- 使用thymeleaf解析 -->
     <bean id="templateResolver"
@@ -42,6 +42,10 @@
           class="org.thymeleaf.spring4.SpringTemplateEngine">
         <property name="templateResolver" ref="templateResolver" />
     </bean>
+
+    <!-- swagger 配置文件-->
+    <mvc:default-servlet-handler />
+    <bean class="com.qf.newpaper.tools.SpringfoxDocConfig"></bean>
 
     <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
         <property name="characterEncoding" value="UTF-8"/>

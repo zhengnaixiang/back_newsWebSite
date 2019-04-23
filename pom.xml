@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>4.2.5.RELEASE</version>
+            <version>5.1.5.RELEASE</version>
         </dependency>
         <!--单元测试-->
         <dependency>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>4.2.5.RELEASE</version>
+            <version>5.1.5.RELEASE</version>
         </dependency>
 
         <!--阿里巴巴德鲁伊连接池-->
@@ -234,6 +234,13 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>5.1.5.RELEASE</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -9,5 +9,8 @@
         <module name="back_newsWebSite" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="back_newsWebSite" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

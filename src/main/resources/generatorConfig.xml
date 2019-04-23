@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+        "http://mybatis.org/dtd/mybatis-generator-config_3_0.dtd">
 <!--mybatis-generator-maven-plugin生成数据库实体的配置文件-->
 <generatorConfiguration>
     <!--导入属性配置，前面我们写的一个配置文件，你也可以直接使用mybatis的jdbc的配置文件 -->
-    <properties resource="mysql.properties"></properties>
+    <properties resource="jdbc.properties"></properties>
     <!-- 数据库驱动，注意，这里必须要修改成你的数据库的驱动地址-->
     <!--<classPathEntry location ="D:\Cache\maven\repository\mysql\mysql-connector-java\5.1.46\mysql-connector-java-5.1.46.jar" />-->
-    <classPathEntry location ="F:\class\maven\maven-repository\mysql\mysql-connector-java\5.1.46\mysql-connector-java-5.1.46.jar" />
+    <classPathEntry location ="D:\appach_maven\GZ1807local_repo\mysql\mysql-connector-java\5.1.4\mysql-connector-java-5.1.4.jar" />
 
     <context id="DB2Tables" targetRuntime="MyBatis3">
 
@@ -25,7 +25,7 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!--数据库链接URL，用户名、密码 -->
-        <jdbcConnection driverClass="${jdbc.driver}" connectionURL="${jdbc.url}" userId="${jdbc.username}" password="${jdbc.password}">
+        <jdbcConnection driverClass="${jdbc.driverClass}" connectionURL="${jdbc.connectionURL}" userId="${jdbc.username}" password="${jdbc.password}">
         </jdbcConnection>
         <!--是否强制DECIMAL和NUMERIC类型的字段转换为Java类型的java.math.BigDecimal-->
         <javaTypeResolver>

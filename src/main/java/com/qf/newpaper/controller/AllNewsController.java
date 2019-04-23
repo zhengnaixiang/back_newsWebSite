@@ -36,7 +36,7 @@ public class AllNewsController {
     @RequestMapping(value = "/list",method = RequestMethod.POST)
     @ResponseBody
     // @ResponseBody封包，@RequestBody 解包
-    public NewPaperDto<TbNewPaperDto> getReceiveList
+    public NewPaperDto<TbNewPaperDto> getList
             (HttpServletRequest request, @Valid @RequestBody NewPaperVo newPaperVo,
              BindingResult errors) {
 
@@ -55,13 +55,15 @@ public class AllNewsController {
                 }
             }
         }
-        System.out.println(list);
+        System.out.println("11:"+list);
 
         //属性拷贝，返回为给前端的回应
         List<TbNewPaperDto> data = new ArrayList<TbNewPaperDto>();
+        System.out.println("111");
         if (list.getList() != null) {
             for (TbNewPaperDto tbNewPaperDto : list.getList()) {
                 TbNewPaperDto bean = new TbNewPaperDto();
+                System.out.println(tbNewPaperDto);
 
                 String time = tbNewPaperDto.getNpDate().toString();
                 tbNewPaperDto.setTime(time);
@@ -75,6 +77,7 @@ public class AllNewsController {
                 data.add(bean);
             }
         }
+        System.out.println("222");
         //4.2 接口返回参数，数据库返回属性的类型，data为返回参数实体中的泛型那个
         NewPaperDto<TbNewPaperDto> newPaperDto = new NewPaperDto(data);
         /*newPaperDto.setPageSize(2);

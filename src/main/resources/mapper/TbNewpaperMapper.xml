@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qf.newpaper.mapper.TbNewpaperMapper" >
   <resultMap id="BaseResultMap" type="com.qf.newpaper.pojo.TbNewpaper" >
     <!--
@@ -20,19 +21,19 @@
   <!--   分页模糊查询 -->
     <select id="pageFuzzyselect" resultType="com.qf.newpaper.dto.TbNewPaperDto">
         SELECT * FROM(SELECT b.*,class_name AS className FROM(SELECT a.* FROM (SELECT
-        np.np_id,np.np_title,np.user_alias,np.np_date,np.np_likes
+        np.np_id AS npId,np.np_title AS npTitle,np.user_alias AS userAlias,np.np_date AS npDate,np.np_likes AS npLikes
         FROM newpaper np WHERE np.np_status = 1
-        )as a GROUP BY np_id)AS b
-        INNER JOIN classes c1,newpaper np1 WHERE b.np_id = np1.np_id AND c1.class_id = np1.classes GROUP BY np_id)AS q
+        )as a GROUP BY npId)AS b
+        INNER JOIN classes c1,newpaper np1 WHERE b.npId = np1.np_id AND c1.class_id = np1.classes GROUP BY npId)AS q
 
         <if test="search!=null and search !=''">
-            WHERE np_title like binary '%${search}%'
+            WHERE npTitle like binary '%${search}%'
         </if>
         <if test="search!=null and search !=''">
-            or user_alias like binary '%${search}%'
+            or userAlias like binary '%${search}%'
         </if>
         <if test="search!=null and search !=''">
-            or np_date like binary '%${search}%'
+            or npDate like binary '%${search}%'
         </if>
         <if test="orderStr != null and orderStr.length() > 0">
             ${orderStr}

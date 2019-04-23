@@ -6,6 +6,7 @@ import com.qf.Comment.pojo.Comment;
 import com.qf.Comment.service.CommentService;
 import com.qf.Comment.vo.CommentVo;
 import com.qf.Comment.vo.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,8 @@ import java.util.List;
 @Service
 public class CommentServiceImpol implements CommentService {
 
- /*   @Autowired
-    private CommentMapper commentMapper;*/
-    private static ApplicationContext context=new ClassPathXmlApplicationContext("spring-mybatis.xml","spring-service.xml");
-    private static CommentMapper commentMapper=context .getBean(CommentMapper.class);
-
-
+    @Autowired
+    private CommentMapper commentMapper;
 
     /**
      * 获取评论管理列表所需要的数据
