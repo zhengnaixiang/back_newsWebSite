@@ -184,12 +184,12 @@
                 {
                     "render": function ( data, type, row , meta) {
                         return "<button type=\"button\" class=\"btn btn-success btn-xs\" onclick=\"toEditNews(" + data + ")\"><i class=\" glyphicon glyphicon-pencil\"></i>编辑</button>" +
-                        "<button type=\"button\" class=\"btn btn-primary btn-xs\" onclick=\"toReadNews(" + data + ")\"><i class=\" glyphicon glyphicon-check\"></i>查看</button>" +
-                        "<button type=\"button\" onclick='deleteById(" + data + ")' class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i>删除</button>";
+                            "<button type=\"button\" class=\"btn btn-primary btn-xs\" onclick=\"toReadNews(" + data + ")\"><i class=\" glyphicon glyphicon-check\"></i>查看</button>" +
+                            "<button type=\"button\" onclick='deleteById(" + data + ")' class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i>删除</button>";
                     },
                     "targets": 7 //指定渲染列：第一列(渲染第一列为单选框，data自动匹配为  {"data":"id"}中数据）
                 }
-            ,{
+                ,{
                     "targets": 'nosort',  //列的样式名
                     "orderable": false    //包含上样式名‘nosort’的禁止排序
                 }],
