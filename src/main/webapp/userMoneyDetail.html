@@ -2,7 +2,7 @@
 <html lang="utf-8">
 <head>
     <meta charset="UTF-8">
-    <title>收益分析</title>
+    <title>用户交易记录</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -26,33 +26,15 @@
                     <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i>合计金额：<span id="totalMoney"></span></h3>
                 </div>
                 <div class="panel-body">
-                    <form class="form-inline" role="form" style="float:left;">
-                        <div class="form-group has-feedback">
-                            <div class="input-group">
-                                <div class="input-group-addon">ID</div>
-                                <input id="user_id" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">用户名称</div>
-                                <input id="user_alias" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">用户金额</div>
-                                <input id="sum" class="form-control has-success" type="text" placeholder="请输入查询条件">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-warning" onclick="init(1,5)"><i class="glyphicon glyphicon-search"></i> 查询</button>
-                    </form>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
                         <table class="table  table-bordered" id="tab">
                             <thead>
-                            <tr >
-                                <th width="30">ID</th>
-                                <th>用户名称</th>
-                                <th>用户金额</th>
-                                <th width="130">操作</th>
+                            <tr>
+                                <th>交易记录</th>
+                                <th>交易金额</th>
+                                <th>交易时间</th>
                             </tr>
                             </thead>
                         </table>
@@ -86,34 +68,32 @@
     });
 
     /*进行页面数据的初始化加载*/
+    var user_id=window.location.href.split("=")[1];
     function init(currentPage, pageSize) {
         $.ajax({
             type: 'POST',
-            url: 'getMoneyCountByUser',
+            url: 'getUserMoneyDetail',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 "currentPage": currentPage,
                 "pageSize": pageSize,
-                "user_id":$("#user_id").val().trim(),
-                "user_alias":$("#user_alias").val().trim(),
-                "sum":$("#sum").val().trim()
+                "user_id":user_id
             }),
             success: function (responseText) {
-                $("#user_id").val("");
-                $("#user_alias").val("");
-                $("#sum").val("");
                 console.log(responseText);
                 //给表格添加数据
                 for (var i = 0; i < responseText.list.length; i++) {
+                    var state=responseText.list[i].state;
+                    if (state==1){
+                        state="收入";
+                    } else{
+                        state="支出";
+                    }
                     $("#tab").append("<tr>\n" +
-                        "                                <td>"+responseText.list[i].user_id+"</td>\n" +
-                        "                                <td>"+responseText.list[i].user_alias+"</td>\n" +
-                        "                                <td>"+responseText.list[i].sum+"</td>\n" +
-                        "                                <td>\n" +
-                        "                                    <button type=\"button\" class=\"btn btn-success btn-xs\" onclick='turnToUserPage("+responseText.list[i].user_id+")'><i class=\" glyphicon glyphicon-pencil\"></i>查看</button>\n" +
-                        "                                </td>\n" +
-                        "                            </tr>");
-
+                        "<td>"+state+"</td>\n" +
+                        "<td>"+responseText.list[i].amount+"</td>\n" +
+                        "<td>"+responseText.list[i].operation_date+"</td>\n" +
+                        "</tr>");
                 }
                 //动态生成页数
                 for (var i = 0; i < responseText.lastPage; i++) {
@@ -176,30 +156,6 @@
         $("#tab tr:not(:first)").empty("");
         $("#btns").find("button").remove();
         init($("#t").val(), 5);
-    }
-
-    /*通过ajax，获取所有的金额总数*/
-    function getTotalMoney() {
-        $.ajax({
-            type: 'POST',
-            url:  'getAllMoneyCount',
-            contentType: "application/json; charset=utf-8",
-            success: function(responseText){
-                console.log(responseText);
-                $("#totalMoney").html(responseText);
-            } ,
-            error:function (message) {
-                console.log(message);
-            },
-            dataType: 'json'
-        });
-    }
-    getTotalMoney();
-
-    /*查看该用户的具体交易信息*/
-    function turnToUserPage(user_id) {
-        var  url="userMoneyDetail.html?user_id="+user_id;
-        window.location.href=url;
     }
 
 </script>
