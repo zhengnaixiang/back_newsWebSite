@@ -11,4 +11,11 @@ public class MoneyDto {
     String user_alias;
     /*用户的金钱总数*/
     int sum;
+
+    /*用户的交易状态*/
+    int state;
+    /*用户交易的金额*/
+    int amount;
+    /*用户的交易时间*/
+    String operation_date;
 }

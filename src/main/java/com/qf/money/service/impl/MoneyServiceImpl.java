@@ -1,14 +1,10 @@
 package com.qf.money.service.impl;
 
-import com.qf.Comment.mapper.CommentMapper;
 import com.qf.money.dto.MoneyDto;
 import com.qf.money.mapper.MoneyMapper;
-import com.qf.money.pojo.Money;
 import com.qf.money.service.MoneyService;
 import com.qf.money.vo.MoneyVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +12,8 @@ import java.util.List;
 @Service
 public class MoneyServiceImpl implements MoneyService {
 
- /*   @Autowired
-    MoneyMapper moneyMapper;*/
-    private static ApplicationContext context=new ClassPathXmlApplicationContext("spring-mybatis.xml","spring-service.xml");
-    private static MoneyMapper moneyMapper=context .getBean(MoneyMapper.class);
+    @Autowired
+    MoneyMapper moneyMapper;
 
 
     /**
@@ -36,5 +30,14 @@ public class MoneyServiceImpl implements MoneyService {
      */
     public List<MoneyDto> getMoneyCountByUser(MoneyVo moneyVo) {
         return moneyMapper.getMoneyCountByUser(moneyVo);
+    }
+
+    /**
+     * 根据用户的id，获取该用户的具体交易信息
+     * @param user_id
+     * @return
+     */
+    public List<MoneyDto> getUserMoneyDetail(int user_id) {
+        return moneyMapper.getUserMoneyDetail(user_id);
     }
 }
