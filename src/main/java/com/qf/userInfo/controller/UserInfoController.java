@@ -39,7 +39,7 @@ public class UserInfoController {
     @RequestMapping(value = "addUserInfoMethod",method = RequestMethod.POST)
     public String addUserInfoMethod(@RequestParam("file")CommonsMultipartFile file,HttpServletRequest request){
         UserInfo userInfo = new UserInfo();
-       UserInfoUtlis.setUser_img(file,userInfo );
+        UserInfoUtlis.setUser_img(file,userInfo,request);
        UserInfoUtlis.setObject(request,userInfo );
        userInfo.setPassword(Md5Utils.encodePassword(userInfo.getPassword()));
         Boolean b = userInfoService.addUserInfo(userInfo);
@@ -66,7 +66,7 @@ public class UserInfoController {
     @RequestMapping(value = "updateUserInfo",method = RequestMethod.POST)
     public String updateUserInfo(@RequestParam("file") CommonsMultipartFile file, HttpServletRequest request){
         UserInfo userInfo = new UserInfo();
-        UserInfoUtlis.setUser_img(file,userInfo );
+        UserInfoUtlis.setUser_img(file,userInfo,request);
         UserInfoUtlis.setObject(request,userInfo );
         Boolean b = userInfoService.updateUserInfo(userInfo);
         return "<script type='text/javascript'>onload = function(){location.href='user.html'}</script>";
