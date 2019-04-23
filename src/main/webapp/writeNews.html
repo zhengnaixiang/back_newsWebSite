@@ -15,6 +15,74 @@
         #reSet{margin-top: 10px}
     </style>
 </head>
+<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+<script type="text/javascript">
+    function doAdd(){
+        $.ajax({
+            type: 'post',
+            url: 'addNew',
+            contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify({
+                "np_title": $("#np_title").val(),
+                "user_alias": $("#user_alias").val(),
+                "np_date": $("#np_date").val(),
+                "np_content": $("#np_content").val(),
+                "np_image": $("#np_image").val()
+            }),
+            success: function (response) {
+                if (response) {
+                    window.location.href = 'allNews.html';
+                }else {
+                    alert("添加失败！")
+                }
+            },
+            error: function (message) {
+                console.log(message);
+            },
+            dataType: 'json'
+        });
+    }
+
+    $(function () {
+        $(".list-group-item").click(function(){
+            if ( $(this).find("ul") ) {
+                $(this).toggleClass("tree-closed");
+                if ( $(this).hasClass("tree-closed") ) {
+                    $("ul", this).hide("fast");
+                } else {
+                    $("ul", this).show("fast");
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function load() {
+        $.ajax({
+            type: "POST",
+            url: "showClass",
+            contentType: "application/json; charset=utf-8",
+            cache: false,  //禁用缓存
+            success: function (result) {
+                console.log(result);
+                // alert(result[1].className)
+
+                $(result).each(function (index, item) {
+                    var classNews = document.getElementById("classNews");
+                    var option = document.createElement('option');
+
+                    // alert(option.value)
+                    option.innerText = item.class_name;
+                    option.value = item.class_id;
+                    // alert(option.text)
+                    classNews.appendChild(option);
+                })
+            }
+        })
+    }
+    load();
+</script>
+
 <body>
 
 <div id="top"></div>
@@ -23,68 +91,26 @@
         <div id="left"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content">
             <h2 class="page-header">撰写新闻</h2>
-            <div>
-                <h4>新闻标题:</h4>
-                <input type="text" id="headLine" style="width: 100%" height="50%" />
-            </div>
-            <div>
-                <h5>新闻分类:</h5>
-                <select style="width: 100%" id="classNews" style="height: 50px">
-                    <option >1</option>
-                    <option>2</option>
-                </select>
-            </div>
-            <div id="editor" style="margin-top: 15px"></div>
-            <input type="text" id="keyword" style="width: 100%" height="50%" placeholder="输入内容回车添加标签" style=""/>
-            <input type="button" id="submit" value="提交" style="width: 60px" style="margin-top: 20px" />
-            <input type="button" id="reSet" value="重置" style="width: 60px" style="margin-top: 20px"/>
-            <script>
-                var E = window.wangEditor;
-                var editor = new E('#editor'); // 两个参数也可以传入 elem 对象，class 选择器
-                //开启debug模式
-                editor.customConfig.debug = true;
-                // 关闭粘贴内容中的样式
-                editor.customConfig.pasteFilterStyle = false;
-                // 忽略粘贴内容中的图片
-                editor.customConfig.pasteIgnoreImg = false;
-                // 使用 base64 保存图片
-                //editor.customConfig.uploadImgShowBase64 = true
-                // 上传图片到服务器
-                editor.customConfig.uploadFileName = 'editorFile'; //设置文件上传的参数名称
-                editor.customConfig.uploadImgServer = 'upload1'; //设置上传文件的服务器路径
-                editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
-                //自定义上传图片事件
-                editor.customConfig.uploadImgHooks = {
-                    before: function(xhr, editor, files) {
+            <form method="post"  action="" enctype="multipart/form-data">
+                <input type="hidden" name="np_id" value="${newPaper.np_id}"/>
+                <input type="hidden" name="np_image" value="${newPaper.np_image}">
+                <ul class="forminfo">
+                    <li><label>新闻标题</label><input id="np_title" type="text" class="dfinput" /><i>标题不能超过30个字符</i></li>
+                    <li><label>类别</label>
+                        <select  name="classNews" id="classNews">
+                        </select>
 
-                    },
-                    success: function(xhr, editor, result) {
-                        console.log("上传成功");
-                    },
-                    fail: function(xhr, editor, result) {
-                        console.log("上传失败,原因是" + result);
-                    },
-                    error: function(xhr, editor) {
-                        console.log("上传出错");
-                    },
-                    timeout: function(xhr, editor) {
-                        console.log("上传超时");
-                    }
-                }
+                    </li>
+                    <li><label>新闻图片</label><input id="np_image" type="file" /></li>
+                    <li><label>新闻作者</label><input id="user_alias" type="text" class="dfinput" /><i>输入正确的名字</i></li>
+                    <li><label>新闻时间</label><input id="np_date" type="datetime-local" class="dfinput" /><i>输入正确的时间</i></li>
+                    <li><label>新闻内容</label><textarea rows="20" cols="80" id="np_content" ></textarea></li>
+                    <button type="button" class="btn btn-success" onclick="doAdd()"><i class="glyphicon glyphicon-plus"></i> 确认提交</button>
+                </ul>
 
-                editor.create();
-                $("#test1").bind("click",function(){
-                    var src = editor.txt.html();
-                    alert(src);
-                });
-                $("#test2").bind("click",function(){
-                    var src = editor.txt.text();
-                    alert(src);
-                });
-            </script>
+            </form>
         </div>
     </div>
-</div>
 </body>
 <script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
